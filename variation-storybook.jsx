@@ -599,7 +599,8 @@
 
   function SPodium({ top3, P, m, highlightId, dur }) {
     const order = [1, 0, 2]; // display: 2nd, 1st, 3rd
-    const heights = m ? { 0: 144, 1: 116, 2: 96 } : { 0: 200, 1: 160, 2: 130 };
+    // min-heights (not fixed) so content can push the card taller if needed
+    const heights = m ? { 0: 168, 1: 144, 2: 132 } : { 0: 220, 1: 184, 2: 168 };
     const swatches = { 0: P.accent, 1: P.warm, 2: P.leaf };
     const labels = { 0: '1st', 1: '2nd', 2: '3rd' };
     return (
@@ -609,7 +610,7 @@
           if (!e) {
             return (
               <div key={rankIdx} style={{
-                height: heights[rankIdx], borderRadius: m ? 14 : 18,
+                minHeight: heights[rankIdx], borderRadius: m ? 14 : 18,
                 background: '#ffffffaa', border: `3px dashed ${P.ink}44`,
                 display: 'grid', placeItems: 'center', color: `${P.ink}55`, fontWeight: 900, fontSize: m ? 16 : 22,
               }}>—</div>
@@ -618,10 +619,11 @@
           const isYou = e.id === highlightId;
           return (
             <div key={e.id} style={{
-              position: 'relative', height: heights[rankIdx], padding: m ? 8 : 14,
+              position: 'relative', minHeight: heights[rankIdx], padding: m ? 10 : 14,
               borderRadius: m ? 14 : 18, background: swatches[rankIdx],
               border: `${m ? 3 : 4}px solid ${P.ink}`, boxShadow: `0 ${m ? 4 : 6}px 0 ${P.ink}`,
               display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+              gap: m ? 8 : 12,
               color: rankIdx === 0 ? '#fff' : P.ink, overflow: 'hidden',
               animation: isYou ? `sb-jiggle 700ms ${dur(0)} cubic-bezier(.34,1.56,.64,1)` : 'none',
             }}>
