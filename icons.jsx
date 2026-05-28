@@ -104,9 +104,22 @@
     </svg>
   );
 
-  // Picks an illustrative icon per question index — kept stable.
-  const ICON_BY_Q = [Cup, Leaf, Leaf, Cardamom, Cup, Cup, Cup, Cardamom, Biscuit, Cup, Cinnamon, Biscuit, StarAnise, Kettle, Cup];
-  const iconForQuestion = (i) => ICON_BY_Q[i % ICON_BY_Q.length] || Cup;
+  // Lookup table: pass a question object (or its `icon` string) and get the
+  // right component back. Questions in quiz-data.js carry an `icon` field;
+  // we no longer key by position, so randomized order doesn't matter.
+  const ICON_BY_NAME = {
+    cup: Cup,
+    leaf: Leaf,
+    cardamom: Cardamom,
+    cinnamon: Cinnamon,
+    biscuit: Biscuit,
+    'star-anise': StarAnise,
+    kettle: Kettle,
+  };
+  function iconForQuestion(qOrName) {
+    const name = typeof qOrName === 'string' ? qOrName : (qOrName && qOrName.icon);
+    return ICON_BY_NAME[name] || Cup;
+  }
 
   Object.assign(window, { Cup, Leaf, StarAnise, Cardamom, Cinnamon, Biscuit, Kettle, Star, Check, Cross, iconForQuestion });
 })();
