@@ -203,6 +203,15 @@
     return sortedLeaderboard(Array.from(byKey.values()));
   }
 
+  // Truly-unique ID. Uses crypto.randomUUID where available so rapid-fire
+  // forEach seeding can't collide.
+  function _newId() {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+    return Date.now() + '-' + Math.random().toString(36).slice(2, 12) + '-' + Math.random().toString(36).slice(2, 12);
+  }
+
   function addEntry({ name, klass, score, total, elapsed }) {
     // Guard against accidental double-submits (kid double-clicks Save)
     const now = Date.now();
@@ -218,7 +227,7 @@
     }
 
     const entry = {
-      id: now + '-' + Math.random().toString(36).slice(2, 7),
+      id: _newId(),
       name: (name || 'Anon').slice(0, 24),
       klass: (klass || '').slice(0, 16),
       score, total, elapsed,
@@ -228,7 +237,6 @@
       const run = () => _firebase.ref.child(entry.id).set(entry)
         .catch((e) => console.warn('[Chai Quiz] addEntry remote failed:', e.message));
       _firebaseReady ? run() : _firebasePending.push(run);
-      // optimistic local update
       _cache = [..._cache, entry]; _persistLocal(); emit();
     } else {
       _cache = [..._cache, entry]; _persistLocal(); emit();
