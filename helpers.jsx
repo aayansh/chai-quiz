@@ -127,16 +127,43 @@
       const lbRef = db.ref('chai-quiz/leaderboard');
       _firebase = { ref: lbRef };
 
+      let _firstSnapshot = true;
       lbRef.on('value', (snap) => {
         const val = snap.val() || {};
-        // Map { id: entry } → [entry] keyed by Firebase key OR entry.id
-        const list = Object.keys(val).map((k) => ({ ...val[k], id: val[k].id || k, _fbKey: k }));
-        _cache = list;
-        _persistLocal(); // keep a local mirror for offline view
+        const remoteList = Object.keys(val).map((k) => ({ ...val[k], id: val[k].id || k, _fbKey: k }));
+
+        // First snapshot: if we have LOCAL entries that aren't in the cloud,
+        // push them up. This preserves scores from before Firebase was set up.
+        if (_firstSnapshot) {
+          _firstSnapshot = false;
+          const remoteIds = new Set(remoteList.map((e) => e.id));
+          const localOnly = _cache.filter((e) => !remoteIds.has(e.id));
+          if (localOnly.length > 0) {
+            console.log(`[Chai Quiz] Migrating ${localOnly.length} local entries to cloud…`);
+            const updates = {};
+            for (const entry of localOnly) {
+              const { _fbKey, ...clean } = entry;
+              updates[entry.id] = clean;
+            }
+            lbRef.update(updates)
+              .then(() => console.log('[Chai Quiz] Migration complete — cloud now has all local scores.'))
+              .catch((e) => console.warn('[Chai Quiz] Migration failed:', e.message));
+            // Skip overwriting _cache this round — next 'value' fire will include
+            // the migrated entries and become the source of truth.
+            if (!_firebaseReady) {
+              _firebaseReady = true;
+              const pending = _firebasePending; _firebasePending = [];
+              pending.forEach((fn) => fn());
+            }
+            return;
+          }
+        }
+
+        _cache = remoteList;
+        _persistLocal();
         emit();
         if (!_firebaseReady) {
           _firebaseReady = true;
-          // flush queued writes
           const pending = _firebasePending; _firebasePending = [];
           pending.forEach((fn) => fn());
         }
@@ -177,12 +204,25 @@
   }
 
   function addEntry({ name, klass, score, total, elapsed }) {
+    // Guard against accidental double-submits (kid double-clicks Save)
+    const now = Date.now();
+    const recentDup = _cache.find((e) =>
+      (e.name || '').trim().toLowerCase() === (name || '').trim().toLowerCase() &&
+      (e.klass || '').trim().toLowerCase() === (klass || '').trim().toLowerCase() &&
+      e.score === score && e.elapsed === elapsed &&
+      (now - (e.ts || 0)) < 5000 // within last 5 seconds
+    );
+    if (recentDup) {
+      console.log('[Chai Quiz] Skipping duplicate submission.');
+      return recentDup;
+    }
+
     const entry = {
-      id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+      id: now + '-' + Math.random().toString(36).slice(2, 7),
       name: (name || 'Anon').slice(0, 24),
       klass: (klass || '').slice(0, 16),
       score, total, elapsed,
-      ts: Date.now(),
+      ts: now,
     };
     if (_firebase) {
       const run = () => _firebase.ref.child(entry.id).set(entry)
