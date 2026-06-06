@@ -1,10 +1,11 @@
-// Shared quiz state hook
-// On each begin(), shuffles question order AND option order within each question
-// so the same answers don't sit in the same slot every play.
+// ════════════════════════════════════════════════════════════════
+// CHAI QUIZ v2 — level runner
+// useLevelQuiz(level) plays the 5 questions of one level. Question +
+// option order are shuffled each attempt.
+// ════════════════════════════════════════════════════════════════
 (function () {
-  const { useState, useCallback, useMemo, useEffect, useRef } = React;
+  const { useState, useCallback, useMemo, useRef } = React;
 
-  // Fisher–Yates
   function shuffle(arr) {
     const a = arr.slice();
     for (let i = a.length - 1; i > 0; i--) {
@@ -14,68 +15,58 @@
     return a;
   }
 
-  function buildShuffledQuiz() {
-    const src = window.CHAI_QUIZ || [];
-    return shuffle(src).map((q) => ({
-      ...q,
-      options: shuffle(q.options),
-    }));
-  }
-
-  function useQuiz({ onCorrect, onWrong, onFinish } = {}) {
-    const [stage, setStage] = useState('intro'); // 'intro' | 'q' | 'result'
+  function useLevelQuiz(level, { onCorrect, onWrong, onFinish } = {}) {
+    const [questions, setQuestions] = useState(() => buildQs(level));
     const [idx, setIdx] = useState(0);
     const [picked, setPicked] = useState(null);
-    const [score, setScore] = useState(0);
-    const [answers, setAnswers] = useState([]);
-    const [quiz, setQuiz] = useState(() => buildShuffledQuiz());
-    const startTimeRef = useRef(null);
+    const [correct, setCorrect] = useState(0);
+    const startRef = useRef(Date.now());
     const [elapsed, setElapsed] = useState(0);
+    const [done, setDone] = useState(false);
 
-    const begin = useCallback(() => {
-      setQuiz(buildShuffledQuiz());
-      setStage('q'); setIdx(0); setPicked(null);
-      setScore(0); setAnswers([]);
-      startTimeRef.current = Date.now(); setElapsed(0);
-    }, []);
+    function buildQs(lv) {
+      if (!lv) return [];
+      return shuffle(lv.questions).map((q) => ({ ...q, options: shuffle(q.options) }));
+    }
 
-    const restart = useCallback(() => { setStage('intro'); }, []);
+    const restart = useCallback(() => {
+      setQuestions(buildQs(level));
+      setIdx(0); setPicked(null); setCorrect(0);
+      startRef.current = Date.now(); setElapsed(0); setDone(false);
+    }, [level]);
 
     const pick = useCallback((optIdx) => {
       if (picked !== null) return;
-      const q = quiz[idx];
-      const isCorrect = !!q.options[optIdx].correct;
+      const q = questions[idx];
+      const isRight = !!q.options[optIdx].correct;
       setPicked(optIdx);
-      setAnswers((a) => [...a, optIdx]);
-      if (isCorrect) { setScore((s) => s + 1); onCorrect && onCorrect(); }
+      if (isRight) { setCorrect((c) => c + 1); onCorrect && onCorrect(); }
       else { onWrong && onWrong(); }
-    }, [picked, idx, quiz, onCorrect, onWrong]);
+    }, [picked, idx, questions, onCorrect, onWrong]);
 
     const next = useCallback(() => {
-      if (idx + 1 >= quiz.length) {
-        setElapsed(Math.round((Date.now() - (startTimeRef.current || Date.now())) / 1000));
-        setStage('result');
-        onFinish && onFinish();
+      if (idx + 1 >= questions.length) {
+        const secs = Math.round((Date.now() - startRef.current) / 1000);
+        setElapsed(secs); setDone(true);
+        onFinish && onFinish({ correct, total: questions.length, elapsed: secs });
       } else {
         setIdx(idx + 1); setPicked(null);
       }
-    }, [idx, quiz.length, onFinish]);
+    }, [idx, questions.length, correct, onFinish]);
 
-    const current = quiz[idx];
+    const current = questions[idx];
     const isAnswered = picked !== null;
     const isCorrect = isAnswered && !!current.options[picked].correct;
-    const result = useMemo(() => window.getChaiResult(score), [score]);
-    const progress = (idx + (isAnswered ? 1 : 0)) / quiz.length;
+    const progress = (idx + (isAnswered ? 1 : 0)) / (questions.length || 1);
+    const stars = window.starsForLevel(correct);
 
     return {
-      stage, idx, picked, score, answers, elapsed,
-      current, isAnswered, isCorrect, result, progress,
-      total: quiz.length,
-      // timerSec/remaining kept on the API as 0/0 so callers don't break
-      timerSec: 0, remaining: 0, timedOut: false,
-      begin, restart, pick, next,
+      questions, idx, picked, correct, elapsed, done,
+      current, isAnswered, isCorrect, progress, stars,
+      total: questions.length,
+      pick, next, restart,
     };
   }
 
-  window.useQuiz = useQuiz;
+  window.useLevelQuiz = useLevelQuiz;
 })();

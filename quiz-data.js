@@ -1,222 +1,296 @@
-// Chai Quiz — 15 kid-friendly trivia questions
-// Correct answer position is rotated so it's not always the first option.
-// Each question: {q, options:[{label, correct?}], fact}
+// ════════════════════════════════════════════════════════════════
+// CHAI QUIZ v2 — LEVEL DATA
+// 12 themed levels × 5 questions. Add more by appending to CHAI_LEVELS.
+// Each question: { q, icon, options:[{label, correct?}], fact }
+// icon ∈ cup | leaf | cardamom | cinnamon | biscuit | star-anise | kettle
+// ════════════════════════════════════════════════════════════════
 
-window.CHAI_QUIZ = [
+window.CHAI_LEVELS = [
   {
-    // correct: B
-    q: 'What does the word "chai" mean?',
-    icon: 'cup',
-    options: [
-      { label: 'Milk' },
-      { label: 'Tea', correct: true },
-      { label: 'Sugar' },
-      { label: 'Spice' },
+    id: 'l1', n: 1, title: 'Chai Basics', emoji: '🍵',
+    blurb: 'Where it all begins.',
+    questions: [
+      { q: 'What does the word "chai" actually mean?', icon: 'cup',
+        options: [{ label: 'Milk' }, { label: 'Tea', correct: true }, { label: 'Sugar' }, { label: 'Spice' }],
+        fact: '"Chai" just means tea — so "chai tea" really means "tea tea"!' },
+      { q: 'Which country is masala chai from?', icon: 'cup',
+        options: [{ label: 'Italy' }, { label: 'Japan' }, { label: 'India', correct: true }, { label: 'Brazil' }],
+        fact: 'Masala chai was born in India and is loved all over the world today.' },
+      { q: 'Tea leaves come from which plant?', icon: 'leaf',
+        options: [{ label: 'A coffee bush' }, { label: 'A rose bush' }, { label: 'The tea plant (Camellia sinensis)', correct: true }, { label: 'A mint vine' }],
+        fact: 'Black, green, white and oolong tea all come from the SAME plant.' },
+      { q: 'Which spice gives masala chai its cosy smell?', icon: 'cardamom',
+        options: [{ label: 'Cardamom', correct: true }, { label: 'Chilli' }, { label: 'Basil' }, { label: 'Mustard' }],
+        fact: 'Cardamom pods are the fragrant heart of masala chai.' },
+      { q: 'What makes Indian chai creamy?', icon: 'kettle',
+        options: [{ label: 'Lemon juice' }, { label: 'Milk', correct: true }, { label: 'Soda water' }, { label: 'Oil' }],
+        fact: 'Chai is simmered with hot milk until rich and creamy.' },
     ],
-    fact: '"Chai" literally means tea — so "chai tea" is really "tea tea"!',
   },
   {
-    // correct: D
-    q: 'Which country is masala chai from?',
-    icon: 'cup',
-    options: [
-      { label: 'Italy' },
-      { label: 'Japan' },
-      { label: 'Mexico' },
-      { label: 'India', correct: true },
+    id: 'l2', n: 2, title: 'Tea Around the World', emoji: '🌍',
+    blurb: 'Sip your way across the globe.',
+    questions: [
+      { q: 'Which country is famous for matcha green tea?', icon: 'leaf',
+        options: [{ label: 'Japan', correct: true }, { label: 'Mexico' }, { label: 'Egypt' }, { label: 'Canada' }],
+        fact: 'Japan is famous for matcha — a bright green powdered tea.' },
+      { q: 'Which country gave us the "afternoon tea" tradition?', icon: 'cup',
+        options: [{ label: 'Spain' }, { label: 'Britain', correct: true }, { label: 'Greece' }, { label: 'Norway' }],
+        fact: 'Afternoon tea with cakes and sandwiches began in Britain in the 1840s.' },
+      { q: 'Moroccan tea is famously flavoured with what?', icon: 'leaf',
+        options: [{ label: 'Mint', correct: true }, { label: 'Garlic' }, { label: 'Cheese' }, { label: 'Pepper' }],
+        fact: 'Moroccan mint tea is sweet, green and poured from up high to make foam!' },
+      { q: 'Bubble tea (boba) was invented in which country?', icon: 'cup',
+        options: [{ label: 'France' }, { label: 'Taiwan', correct: true }, { label: 'Iceland' }, { label: 'Peru' }],
+        fact: 'Bubble tea, with its chewy tapioca pearls, started in Taiwan in the 1980s.' },
+      { q: 'In Turkey, tea is usually served in glasses shaped like a…', icon: 'cup',
+        options: [{ label: 'Tulip', correct: true }, { label: 'Boot' }, { label: 'Star' }, { label: 'Box' }],
+        fact: 'Turkish tea comes in little tulip-shaped glasses with no handle.' },
     ],
-    fact: 'Masala chai was born in India, where families have brewed it for centuries.',
   },
   {
-    // correct: C
-    q: 'Tea leaves come from which plant?',
-    icon: 'leaf',
-    options: [
-      { label: 'A coffee bush' },
-      { label: 'A rose bush' },
-      { label: 'The tea plant (Camellia sinensis)', correct: true },
-      { label: 'A mint vine' },
+    id: 'l3', n: 3, title: 'Spice Rack', emoji: '🌶️',
+    blurb: 'Meet the spices in your cup.',
+    questions: [
+      { q: 'Cinnamon is actually the ___ of a tree.', icon: 'cinnamon',
+        options: [{ label: 'Bark', correct: true }, { label: 'Leaf' }, { label: 'Root' }, { label: 'Flower' }],
+        fact: 'Cinnamon is dried tree bark that curls into sticks as it dries.' },
+      { q: 'Ginger, used in chai, is a…', icon: 'cardamom',
+        options: [{ label: 'Root', correct: true }, { label: 'Berry' }, { label: 'Nut' }, { label: 'Seed' }],
+        fact: 'Ginger grows underground as a knobbly root and adds a warm zing.' },
+      { q: 'Star anise is shaped like a…', icon: 'star-anise',
+        options: [{ label: 'Heart' }, { label: 'Star', correct: true }, { label: 'Square' }, { label: 'Spiral' }],
+        fact: 'Star anise has about 8 points and tastes a little like liquorice.' },
+      { q: 'Which spice adds a tiny kick of HEAT to chai?', icon: 'cinnamon',
+        options: [{ label: 'Sugar' }, { label: 'Mint' }, { label: 'Black pepper', correct: true }, { label: 'Vanilla' }],
+        fact: 'A pinch of black pepper warms you up on a cold day.' },
+      { q: 'Which one is NOT a normal chai spice?', icon: 'cardamom',
+        options: [{ label: 'Clove' }, { label: 'Cardamom' }, { label: 'Ginger' }, { label: 'Mustard', correct: true }],
+        fact: 'Mustard belongs in curry, not chai!' },
     ],
-    fact: 'Black, green, oolong and white tea all come from the same plant!',
   },
   {
-    // correct: A
-    q: 'Which spice gives masala chai its warm, cozy smell?',
-    icon: 'cardamom',
-    options: [
-      { label: 'Cardamom', correct: true },
-      { label: 'Chocolate' },
-      { label: 'Basil' },
-      { label: 'Mustard' },
+    id: 'l4', n: 4, title: 'Tea Colours & Types', emoji: '🎨',
+    blurb: 'Black, green, white and more.',
+    questions: [
+      { q: 'Which tea is the LEAST processed of all?', icon: 'leaf',
+        options: [{ label: 'Black tea' }, { label: 'White tea', correct: true }, { label: 'Oolong' }, { label: 'Pu-erh' }],
+        fact: 'White tea is made from young buds and barely processed at all.' },
+      { q: 'Kashmiri "noon chai" is famous for being which colour?', icon: 'cup',
+        options: [{ label: 'Blue' }, { label: 'Pink', correct: true }, { label: 'Green' }, { label: 'Purple' }],
+        fact: 'Noon chai turns pink thanks to a pinch of baking soda — tasty chemistry!' },
+      { q: 'Matcha is a green tea that comes as a…', icon: 'leaf',
+        options: [{ label: 'Powder', correct: true }, { label: 'Syrup' }, { label: 'Crystal' }, { label: 'Gas' }],
+        fact: 'Matcha is whole green tea leaves ground into a fine bright powder.' },
+      { q: 'Black tea leaves get their dark colour from…', icon: 'leaf',
+        options: [{ label: 'Paint' }, { label: 'Air turning them brown (oxidation)', correct: true }, { label: 'Sunlight only' }, { label: 'Freezing' }],
+        fact: 'Letting leaves react with air (oxidising) turns them dark and bold.' },
+      { q: 'Oolong tea sits in between which two teas?', icon: 'leaf',
+        options: [{ label: 'Green and black', correct: true }, { label: 'Milk and water' }, { label: 'Hot and cold' }, { label: 'Sweet and salty' }],
+        fact: 'Oolong is partly oxidised — between green (none) and black (full).' },
     ],
-    fact: 'Cardamom pods are the secret heart of masala chai.',
   },
   {
-    // correct: B
-    q: 'What is added to make chai creamy?',
-    icon: 'kettle',
-    options: [
-      { label: 'Lemon juice' },
-      { label: 'Milk', correct: true },
-      { label: 'Soda water' },
-      { label: 'Olive oil' },
+    id: 'l5', n: 5, title: 'Tea Talk', emoji: '🗣️',
+    blurb: 'Words every chai fan should know.',
+    questions: [
+      { q: 'What does "kadak" chai mean?', icon: 'cup',
+        options: [{ label: 'Strong', correct: true }, { label: 'Sweet' }, { label: 'Icy' }, { label: 'Tiny' }],
+        fact: 'Kadak chai is brewed long and strong for a bold taste.' },
+      { q: 'A "cutting chai" is…', icon: 'cup',
+        options: [{ label: 'A giant mug' }, { label: 'A small half-cup', correct: true }, { label: 'A frozen drink' }, { label: 'A biscuit' }],
+        fact: 'Cutting chai is half a glass — a quick little sip shared between friends.' },
+      { q: 'What do we call the person who makes and sells chai?', icon: 'kettle',
+        options: [{ label: 'Chaiwallah', correct: true }, { label: 'Captain' }, { label: 'Gardener' }, { label: 'Pilot' }],
+        fact: 'A chaiwallah is a tea seller — you find them all over India.' },
+      { q: 'Jaggery, used to sweeten chai, is a kind of…', icon: 'biscuit',
+        options: [{ label: 'Salt' }, { label: 'Sugar', correct: true }, { label: 'Flour' }, { label: 'Cheese' }],
+        fact: 'Jaggery is golden-brown unrefined sugar made from sugarcane.' },
+      { q: '"Steeping" tea means to…', icon: 'kettle',
+        options: [{ label: 'Soak it in hot water', correct: true }, { label: 'Freeze it' }, { label: 'Fry it' }, { label: 'Blow on it' }],
+        fact: 'Steeping = letting leaves soak so the flavour comes out.' },
     ],
-    fact: 'Indian chai is simmered with hot milk until it turns rich and creamy.',
   },
   {
-    // correct: C
-    q: 'Kashmiri "noon chai" is famous for being which color?',
-    icon: 'cup',
-    options: [
-      { label: 'Blue' },
-      { label: 'Green' },
-      { label: 'Pink', correct: true },
-      { label: 'Purple' },
+    id: 'l6', n: 6, title: 'Snack Time', emoji: '🍪',
+    blurb: 'The best friends of a cup of chai.',
+    questions: [
+      { q: 'What do many people LOVE to do with a biscuit and chai?', icon: 'biscuit',
+        options: [{ label: 'Dunk it', correct: true }, { label: 'Bounce it' }, { label: 'Hide it' }, { label: 'Freeze it' }],
+        fact: 'Dunking a biscuit in chai makes it soft and yummy — but don\'t wait too long!' },
+      { q: 'Parle-G, a classic chai buddy, is a…', icon: 'biscuit',
+        options: [{ label: 'Biscuit', correct: true }, { label: 'Fizzy drink' }, { label: 'Fruit' }, { label: 'Sandwich' }],
+        fact: 'Parle-G is one of the world\'s best-selling biscuits — perfect for dunking.' },
+      { q: 'A "rusk" is a kind of…', icon: 'biscuit',
+        options: [{ label: 'Hard twice-baked toast', correct: true }, { label: 'Soft jelly' }, { label: 'Hot soup' }, { label: 'Cold ice cream' }],
+        fact: 'Rusks are crunchy twice-baked breads made for dunking in tea.' },
+      { q: 'Which of these is a SAVOURY (not sweet) chai-time snack?', icon: 'biscuit',
+        options: [{ label: 'Samosa', correct: true }, { label: 'Doughnut' }, { label: 'Lollipop' }, { label: 'Candy floss' }],
+        fact: 'A crispy samosa with hot chai is a classic afternoon treat.' },
+      { q: 'British afternoon tea often comes with small…', icon: 'biscuit',
+        options: [{ label: 'Sandwiches and scones', correct: true }, { label: 'Burgers' }, { label: 'Tacos' }, { label: 'Pizzas' }],
+        fact: 'Tiny sandwiches, scones and cakes are the stars of afternoon tea.' },
     ],
-    fact: 'Noon chai turns pink because of a tiny pinch of baking soda — magic chemistry!',
   },
   {
-    // correct: A
-    q: 'What does "kadak" chai mean?',
-    icon: 'cup',
-    options: [
-      { label: 'Strong', correct: true },
-      { label: 'Sweet' },
-      { label: 'Icy cold' },
-      { label: 'Tiny' },
+    id: 'l7', n: 7, title: 'Tea Science', emoji: '🔬',
+    blurb: 'The clever stuff inside your cup.',
+    questions: [
+      { q: 'Tea naturally contains a little of which "wake-you-up" ingredient?', icon: 'leaf',
+        options: [{ label: 'Caffeine', correct: true }, { label: 'Helium' }, { label: 'Soap' }, { label: 'Sand' }],
+        fact: 'Tea has caffeine — usually less than coffee, so it gives a gentle lift.' },
+      { q: 'Why do we use HOT water to make tea?', icon: 'kettle',
+        options: [{ label: 'It pulls the flavour out of the leaves', correct: true }, { label: 'It looks nicer' }, { label: 'It is heavier' }, { label: 'It is blue' }],
+        fact: 'Hot water unlocks the flavour, colour and smell trapped in the leaves.' },
+      { q: 'What makes very strong tea taste a bit bitter?', icon: 'leaf',
+        options: [{ label: 'Tannins', correct: true }, { label: 'Bubbles' }, { label: 'Air' }, { label: 'Light' }],
+        fact: 'Tannins are natural compounds in tea — too many make it bitter.' },
+      { q: 'Herbal teas like chamomile usually contain…', icon: 'leaf',
+        options: [{ label: 'No caffeine', correct: true }, { label: 'Extra caffeine' }, { label: 'Metal' }, { label: 'Fizz' }],
+        fact: 'Most herbal teas are caffeine-free, so they\'re great before bed.' },
+      { q: 'Leaving tea leaves out in the air turns them…', icon: 'leaf',
+        options: [{ label: 'Darker', correct: true }, { label: 'Bright blue' }, { label: 'Invisible' }, { label: 'Frozen' }],
+        fact: 'Air browns the leaves (oxidation) — that\'s how black tea is made.' },
     ],
-    fact: 'Kadak chai is brewed extra long so it tastes bold and strong.',
   },
   {
-    // correct: D
-    q: 'Which one is NOT a chai spice?',
-    icon: 'cardamom',
-    options: [
-      { label: 'Cardamom' },
-      { label: 'Cinnamon' },
-      { label: 'Ginger' },
-      { label: 'Mustard', correct: true },
+    id: 'l8', n: 8, title: 'Tea Through Time', emoji: '⏳',
+    blurb: 'A trip into tea history.',
+    questions: [
+      { q: 'Legend says tea was first discovered in which country?', icon: 'leaf',
+        options: [{ label: 'China', correct: true }, { label: 'Australia' }, { label: 'France' }, { label: 'Egypt' }],
+        fact: 'A Chinese legend says leaves blew into Emperor Shen Nung\'s pot of hot water.' },
+      { q: 'For a long time, tea was so special it was treated like…', icon: 'cup',
+        options: [{ label: 'Treasure', correct: true }, { label: 'Rubbish' }, { label: 'A toy' }, { label: 'A hat' }],
+        fact: 'Tea was once so valuable it was locked away in special boxes called caddies.' },
+      { q: 'The famous "Boston Tea Party" involved people throwing tea into the…', icon: 'cup',
+        options: [{ label: 'Sea / harbour', correct: true }, { label: 'Fire' }, { label: 'Sky' }, { label: 'Forest' }],
+        fact: 'In 1773, protesters tipped chests of tea into Boston Harbour.' },
+      { q: 'Tea plants were grown in India by traders from which country?', icon: 'leaf',
+        options: [{ label: 'Britain', correct: true }, { label: 'Italy' }, { label: 'Japan' }, { label: 'Mexico' }],
+        fact: 'British traders set up huge tea gardens in Assam, India, in the 1800s.' },
+      { q: 'Tea travelled the world along ancient routes used for trading…', icon: 'leaf',
+        options: [{ label: 'Goods like silk and spices', correct: true }, { label: 'Cars' }, { label: 'Phones' }, { label: 'Robots' }],
+        fact: 'Tea moved along the Silk Road and by sea with other precious goods.' },
     ],
-    fact: 'Mustard is for curry, not chai! Stick to cardamom, cinnamon, ginger and clove.',
   },
   {
-    // correct: B
-    q: 'What is often added to make chai sweet?',
-    icon: 'biscuit',
-    options: [
-      { label: 'Salt' },
-      { label: 'Sugar or jaggery', correct: true },
-      { label: 'Pepper' },
-      { label: 'Vinegar' },
+    id: 'l9', n: 9, title: 'Indian Tea Gardens', emoji: '🏔️',
+    blurb: 'Where Indian tea grows.',
+    questions: [
+      { q: 'Which Indian region is famous for strong breakfast tea?', icon: 'leaf',
+        options: [{ label: 'Assam', correct: true }, { label: 'Goa' }, { label: 'Delhi' }, { label: 'Mumbai' }],
+        fact: 'Assam, in north-east India, grows bold malty tea perfect for chai.' },
+      { q: 'Darjeeling tea is nicknamed the "___ of teas".', icon: 'leaf',
+        options: [{ label: 'Champagne', correct: true }, { label: 'Pizza' }, { label: 'King' }, { label: 'Engine' }],
+        fact: 'Light, flowery Darjeeling is called the "Champagne of teas".' },
+      { q: 'Tea bushes grow best on cool, misty…', icon: 'leaf',
+        options: [{ label: 'Hillsides', correct: true }, { label: 'Deserts' }, { label: 'Beaches' }, { label: 'Ice caps' }],
+        fact: 'Tea loves rainy, hilly slopes — that\'s why it grows in mountain regions.' },
+      { q: 'Which part of the tea plant is picked to make tea?', icon: 'leaf',
+        options: [{ label: 'The young leaves and buds', correct: true }, { label: 'The roots' }, { label: 'The bark' }, { label: 'The flowers only' }],
+        fact: 'Pickers take "two leaves and a bud" — the freshest tips.' },
+      { q: 'India is one of the world\'s biggest tea ___.', icon: 'kettle',
+        options: [{ label: 'Producers', correct: true }, { label: 'Erasers' }, { label: 'Painters' }, { label: 'Singers' }],
+        fact: 'India is the world\'s 2nd-biggest tea producer, after China.' },
     ],
-    fact: 'Jaggery is a golden brown sugar made from sugarcane — it adds caramel-y sweetness.',
   },
   {
-    // correct: C
-    q: 'A "cutting chai" is...',
-    icon: 'cup',
-    options: [
-      { label: 'A giant mug' },
-      { label: 'A frozen drink' },
-      { label: 'A small half-cup', correct: true },
-      { label: 'A type of biscuit' },
+    id: 'l10', n: 10, title: 'Tea Traditions', emoji: '🎎',
+    blurb: 'Special ways people drink tea.',
+    questions: [
+      { q: 'The Japanese tea ceremony mainly uses which tea?', icon: 'leaf',
+        options: [{ label: 'Matcha', correct: true }, { label: 'Bubble tea' }, { label: 'Iced lemon tea' }, { label: 'Masala chai' }],
+        fact: 'The calm Japanese ceremony whisks powdered matcha into a bowl.' },
+      { q: 'In a Japanese tea ceremony, matcha is mixed with a small bamboo…', icon: 'leaf',
+        options: [{ label: 'Whisk', correct: true }, { label: 'Hammer' }, { label: 'Spoon-fork' }, { label: 'Straw' }],
+        fact: 'A bamboo whisk called a "chasen" froths the matcha.' },
+      { q: 'Moroccan mint tea is famously poured from…', icon: 'kettle',
+        options: [{ label: 'High up, to make foam', correct: true }, { label: 'Under the table' }, { label: 'A balloon' }, { label: 'A shoe' }],
+        fact: 'Pouring from high up cools the tea and makes a frothy top.' },
+      { q: 'In India, chai is often sold on trains and streets in small cups made of…', icon: 'cup',
+        options: [{ label: 'Clay', correct: true }, { label: 'Gold' }, { label: 'Glass only' }, { label: 'Ice' }],
+        fact: 'Little clay cups called "kulhads" are used once, then returned to the earth.' },
+      { q: 'British "afternoon tea" is usually enjoyed in the…', icon: 'cup',
+        options: [{ label: 'Afternoon', correct: true }, { label: 'Middle of the night' }, { label: 'Bath' }, { label: 'Swimming pool' }],
+        fact: 'It\'s a light meal of tea, sandwiches and cake — around 3 to 5 pm.' },
     ],
-    fact: 'Cutting chai is half a glass — perfect for a quick sip between school and play.',
   },
   {
-    // correct: A
-    q: 'Which spice gives chai a tiny kick of heat?',
-    icon: 'cinnamon',
-    options: [
-      { label: 'Black pepper', correct: true },
-      { label: 'Sugar' },
-      { label: 'Mint' },
-      { label: 'Lavender' },
+    id: 'l11', n: 11, title: 'Tea & You', emoji: '💪',
+    blurb: 'Tea, health and feeling good.',
+    questions: [
+      { q: 'Ginger tea is often sipped to help settle a…', icon: 'cardamom',
+        options: [{ label: 'Sore tummy', correct: true }, { label: 'Broken leg' }, { label: 'Bicycle' }, { label: 'Toothbrush' }],
+        fact: 'Ginger has been used for ages to calm an upset tummy.' },
+      { q: 'Drinking tea (or any drink) helps keep your body…', icon: 'kettle',
+        options: [{ label: 'Hydrated', correct: true }, { label: 'Frozen' }, { label: 'Bouncy' }, { label: 'Invisible' }],
+        fact: 'The water in tea helps top up the fluids your body needs.' },
+      { q: 'Which calming, caffeine-free tea is often drunk before bed?', icon: 'leaf',
+        options: [{ label: 'Chamomile', correct: true }, { label: 'Espresso' }, { label: 'Energy tea' }, { label: 'Rocket fuel' }],
+        fact: 'Chamomile is a gentle herbal tea many people enjoy at bedtime.' },
+      { q: 'Tea contains helpful natural compounds called…', icon: 'leaf',
+        options: [{ label: 'Antioxidants', correct: true }, { label: 'Batteries' }, { label: 'Magnets' }, { label: 'Pixels' }],
+        fact: 'Antioxidants are natural helpers found in tea and many fruits and veg.' },
+      { q: 'What can make a cup of chai LESS healthy if you add too much?', icon: 'biscuit',
+        options: [{ label: 'Sugar', correct: true }, { label: 'Water' }, { label: 'Air' }, { label: 'A smile' }],
+        fact: 'A little sweetness is nice, but loads of sugar isn\'t great for you.' },
     ],
-    fact: 'A pinch of black pepper makes chai feel warm in your chest on cold days.',
   },
   {
-    // correct: D
-    q: "Chai's best snack buddy is usually...",
-    icon: 'biscuit',
-    options: [
-      { label: 'Pizza' },
-      { label: 'Sushi' },
-      { label: 'A burger' },
-      { label: 'A biscuit', correct: true },
+    id: 'l12', n: 12, title: 'Master Brew', emoji: '🏆',
+    blurb: 'The toughest challenge. Good luck!',
+    questions: [
+      { q: 'Which country drinks the MOST tea per person?', icon: 'cup',
+        options: [{ label: 'Turkey', correct: true }, { label: 'USA' }, { label: 'Brazil' }, { label: 'Iceland' }],
+        fact: 'Turkey tops the charts — people there drink several glasses a day!' },
+      { q: 'Pu-erh, a special Chinese tea, is famous for being…', icon: 'leaf',
+        options: [{ label: 'Aged for years', correct: true }, { label: 'Made of plastic' }, { label: 'Always blue' }, { label: 'Fizzy' }],
+        fact: 'Pu-erh is aged like a fine cheese — some is stored for decades!' },
+      { q: 'The "two leaves and a ___" rule tells pickers what to pluck.', icon: 'leaf',
+        options: [{ label: 'Bud', correct: true }, { label: 'Brick' }, { label: 'Boot' }, { label: 'Bell' }],
+        fact: 'The freshest, finest tea is made from two leaves and a bud.' },
+      { q: 'About how many points does a typical star anise have?', icon: 'star-anise',
+        options: [{ label: '8', correct: true }, { label: '2' }, { label: '20' }, { label: '50' }],
+        fact: 'Star anise usually has 8 little arms, each holding a seed.' },
+      { q: 'Which of these teas comes from the Camellia sinensis plant?', icon: 'leaf',
+        options: [{ label: 'All of them: black, green, white & oolong', correct: true }, { label: 'Only black' }, { label: 'Only green' }, { label: 'None of them' }],
+        fact: 'Surprise! Black, green, white and oolong are all the same plant, made differently.' },
     ],
-    fact: 'Parle-G, rusks, Marie biscuits — perfect dunkers!',
-  },
-  {
-    // correct: B
-    q: 'Star anise is shaped like a...',
-    icon: 'star-anise',
-    options: [
-      { label: 'Heart' },
-      { label: 'Star', correct: true },
-      { label: 'Square' },
-      { label: 'Cloud' },
-    ],
-    fact: 'Star anise has 8 little points and tastes a bit like liquorice.',
-  },
-  {
-    // correct: A
-    q: 'Chai is usually served...',
-    icon: 'kettle',
-    options: [
-      { label: 'Steaming hot', correct: true },
-      { label: 'Frozen solid' },
-      { label: 'Lukewarm' },
-      { label: 'Packed with ice' },
-    ],
-    fact: 'A hot cup of chai warms you from your toes up to your nose!',
-  },
-  {
-    // correct: C
-    q: "Which animal's milk is most often used in Indian chai?",
-    icon: 'kettle',
-    options: [
-      { label: 'Goat' },
-      { label: 'Horse' },
-      { label: 'Cow or buffalo', correct: true },
-      { label: 'Cat' },
-    ],
-    fact: 'Buffalo milk is extra rich and creamy — many chaiwallahs swear by it.',
   },
 ];
 
-// Score -> chai personality result
-window.CHAI_RESULTS = [
-  {
-    min: 13,
-    title: 'Kadak Chai Master',
-    blurb: "Wow! You're brewed strong and full of flavour. A true chai champion.",
-    badge: 'KADAK',
-    swatch: '#3d2818',
-  },
-  {
-    min: 9,
-    title: 'Masala Chai',
-    blurb: 'Well-spiced and well-rounded. You know your cardamom from your clove.',
-    badge: 'MASALA',
-    swatch: '#c44d27',
-  },
-  {
-    min: 5,
-    title: 'Cutting Chai',
-    blurb: 'Small but mighty! Half a cup of know-how with room to grow.',
-    badge: 'CUTTING',
-    swatch: '#d98c4a',
-  },
-  {
-    min: 0,
-    title: 'Warm Milk',
-    blurb: 'Gentle and sweet — keep sipping and learning. The kettle is on!',
-    badge: 'STEEP',
-    swatch: '#e8d4a8',
-  },
-];
+// Flat list (handy for counts / admin)
+window.CHAI_ALL_QUESTIONS = window.CHAI_LEVELS.reduce((a, l) => a.concat(l.questions), []);
+window.CHAI_TOTAL_LEVELS = window.CHAI_LEVELS.length;
 
-window.getChaiResult = function (score) {
-  return window.CHAI_RESULTS.find((r) => score >= r.min) || window.CHAI_RESULTS[window.CHAI_RESULTS.length - 1];
+// Star rating for a single level (1 star per correct answer, max 5)
+window.starsForLevel = function (correct) {
+  return Math.max(0, Math.min(5, correct));
 };
+
+// Overall "chai rank" based on total stars collected
+window.CHAI_RANKS = [
+  { min: 55, title: 'Kadak Chai Legend', emoji: '👑', blurb: 'Unstoppable! You are the strongest brew in the school.' },
+  { min: 40, title: 'Masala Master', emoji: '🌟', blurb: 'Wonderfully spiced knowledge. Seriously impressive!' },
+  { min: 25, title: 'Cutting Chai Champ', emoji: '🔥', blurb: 'Small sips add up — you are brewing nicely!' },
+  { min: 10, title: 'Warm Cup', emoji: '☕', blurb: 'You\'re heating up. Keep playing levels!' },
+  { min: 0,  title: 'Fresh Leaf', emoji: '🍃', blurb: 'Every legend starts with one leaf. Off you go!' },
+];
+
+window.getChaiRank = function (totalStars) {
+  return window.CHAI_RANKS.find((r) => totalStars >= r.min) || window.CHAI_RANKS[window.CHAI_RANKS.length - 1];
+};
+
+// ── Pre-made cheer messages kids can send each other ──────────────
+window.CHAI_CHEERS = [
+  'Nice one! 👏', 'GG! 🎮', 'On fire! 🔥', 'Tea-rific! 🍵',
+  'You rock! 🤘', 'So close! 💪', 'Brew-tiful! ✨', 'Legend! 👑',
+  'Keep going! 🚀', 'Spicy score! 🌶️', 'Sip sip hooray! 🎉', 'Good luck! 🍀',
+];
+
+// Pre-made praise the teacher/admin can tap quickly
+window.CHAI_PRAISE = [
+  'Good job! 🌟', 'Excellent work! 👏', 'Top of the class! 🏆',
+  'Brilliant brewing! 🍵', 'Keep it up! 💪', 'Superb effort! ✨',
+];
