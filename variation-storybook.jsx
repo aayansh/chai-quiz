@@ -37,6 +37,7 @@
     const [lastResult, setLastResult] = useState(null);
     const [adminOpen, setAdminOpen] = useState(false);
     const [masterOpen, setMasterOpen] = useState(false);
+    const [decoyOpen, setDecoyOpen] = useState(false);
     const [memoriesOpen, setMemoriesOpen] = useState(false);
     const [inboxOpen, setInboxOpen] = useState(false);
     const [inboxCount, setInboxCount] = useState(0);
@@ -60,8 +61,8 @@
       return () => window.removeEventListener('keydown', h);
     }, []);
 
-    // Secret words: "kettle" → master panel · "memories" → version history
-    // (both ignored while typing in a field)
+    // Secret words: "67" → decoy door · "kettle" → master panel · "memories" → version history
+    // (all ignored while typing in a field)
     useEffect(() => {
       let buf = '';
       const onKey = (e) => {
@@ -71,6 +72,7 @@
           buf = (buf + e.key.toLowerCase()).slice(-10);
           if (buf.endsWith('kettle')) { buf = ''; setMasterOpen(true); }
           else if (buf.endsWith('memories')) { buf = ''; setMemoriesOpen(true); }
+          else if (buf.endsWith('67')) { buf = ''; setDecoyOpen(true); }
         }
       };
       window.addEventListener('keydown', onKey);
@@ -232,6 +234,7 @@
         {inboxOpen && signedIn && <So.Inbox P={P} m={m} player={player} onClose={() => setInboxOpen(false)} />}
         {adminOpen && <So.AdminPanel P={P} m={m} onClose={() => setAdminOpen(false)} />}
         {masterOpen && <window.SBMaster.MasterPanel P={P} m={m} onClose={() => setMasterOpen(false)} />}
+        {decoyOpen && <window.SBMaster.DecoyPanel P={P} m={m} onClose={() => setDecoyOpen(false)} />}
         {memoriesOpen && <window.SBMaster.MemoriesPanel P={P} m={m} onClose={() => setMemoriesOpen(false)} />}
 
         {/* Music button for everyone when the master turns music on AND a link is set */}

@@ -772,5 +772,96 @@
     );
   }
 
-  window.SBMaster = { MasterPanel, FreezeOverlay, MusicButton, MemoriesPanel, BanOverlay };
+  // ═══════════════════════════════════════════════════════════════
+  // DECOY PANEL — opened by typing "67". Looks like a boring dead-end.
+  // Secretly: type "chai" while it's open to reveal the full
+  // Godchai + MC aayansh combined control room.
+  // ═══════════════════════════════════════════════════════════════
+  function DecoyPanel({ P, m, onClose }) {
+    const GOLD = '#f6c25a';
+    const [revealed, setRevealed] = useState(false);
+
+    // Listen for the secret unlock word "chai" while the decoy is open.
+    // Escape always closes, in both decoy and revealed states.
+    useEffect(() => {
+      let buf = '';
+      const onKey = (e) => {
+        if (e.key === 'Escape') { onClose(); return; }
+        if (revealed) return;
+        const el = document.activeElement;
+        if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) return;
+        if (e.key && e.key.length === 1) {
+          buf = (buf + e.key.toLowerCase()).slice(-6);
+          if (buf.endsWith('chai')) { buf = ''; setRevealed(true); }
+        }
+      };
+      window.addEventListener('keydown', onKey);
+      return () => window.removeEventListener('keydown', onKey);
+    }, [revealed, onClose]);
+
+    if (!revealed) {
+      // The harmless-looking decoy
+      return (
+        <div onClick={onClose} style={{
+          position: 'fixed', inset: 0, background: 'rgba(10,10,12,0.92)',
+          display: 'grid', placeItems: 'center', zIndex: 1000, padding: 16,
+          fontFamily: '"Nunito", sans-serif',
+        }}>
+          <div onClick={(e) => e.stopPropagation()} style={{
+            width: '100%', maxWidth: 460, textAlign: 'center',
+            background: '#15161a', color: '#9aa0ab',
+            border: '2px solid #2a2c33', borderRadius: 18,
+            padding: m ? '34px 22px' : '48px 40px',
+            boxShadow: '0 24px 70px rgba(0,0,0,0.6)',
+          }}>
+            <div style={{ fontSize: m ? 54 : 70, marginBottom: 10, filter: 'grayscale(1)', opacity: 0.7 }}>🚧</div>
+            <h2 style={{ fontFamily: '"Fraunces", serif', fontSize: m ? 24 : 30, margin: '0 0 10px', color: '#c7ccd4', fontWeight: 900 }}>
+              Nothing to see here…
+            </h2>
+            <p style={{ fontSize: m ? 14 : 16, lineHeight: 1.5, margin: '0 0 6px' }}>
+              Hahaha — this is just a distraction. 😄
+            </p>
+            <p style={{ fontSize: 12.5, opacity: 0.6, margin: '0 0 22px' }}>
+              (Page under construction. Move along!)
+            </p>
+            <button onClick={onClose} style={{
+              padding: '11px 22px', borderRadius: 999,
+              background: '#2a2c33', color: '#c7ccd4',
+              border: '1px solid #3a3d45', fontWeight: 800,
+              fontSize: 14, cursor: 'pointer', fontFamily: 'inherit',
+            }}>OK, go back</button>
+          </div>
+        </div>
+      );
+    }
+
+    // Revealed: the real combined Godchai + MC aayansh room
+    return (
+      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(8,4,2,0.82)', display: 'grid', placeItems: 'center', zIndex: 1000, padding: 12 }}>
+        <div onClick={(e) => e.stopPropagation()} style={{
+          width: '100%', maxWidth: 640, maxHeight: '92vh', overflowY: 'auto',
+          background: 'linear-gradient(180deg, #1a0f0a, #0d0704)', color: '#fdf3dc',
+          border: `4px solid ${GOLD}`, borderRadius: 24,
+          boxShadow: `0 0 0 1px ${GOLD}55, 0 30px 90px rgba(0,0,0,0.8), inset 0 0 60px ${GOLD}11`,
+          fontFamily: '"Nunito", sans-serif',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: m ? '16px 18px' : '22px 28px', borderBottom: `2px solid ${GOLD}44` }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ fontSize: m ? 30 : 40 }}>👑</div>
+              <div>
+                <div style={{ fontSize: m ? 10 : 12, letterSpacing: '0.3em', color: GOLD, fontWeight: 900, textTransform: 'uppercase' }}>Godchai + MC aayansh</div>
+                <h2 style={{ fontFamily: '"Fraunces", serif', fontSize: m ? 24 : 32, margin: '2px 0 0', fontWeight: 900, color: '#fff' }}>Master Control Room</h2>
+              </div>
+            </div>
+            <button onClick={onClose} style={{ width: 34, height: 34, borderRadius: '50%', background: 'transparent', color: GOLD, border: `2px solid ${GOLD}66`, fontWeight: 900, cursor: 'pointer', fontFamily: 'inherit' }}>✕</button>
+          </div>
+          <div style={{ padding: m ? '18px' : '26px 28px 30px' }}>
+            <MasterBody P={P} m={m} GOLD={GOLD} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  window.SBMaster = { MasterPanel, FreezeOverlay, MusicButton, MemoriesPanel, BanOverlay, DecoyPanel };
 })();
