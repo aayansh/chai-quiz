@@ -266,7 +266,10 @@
     };
     return (
       <button onClick={toggle} title={muted ? 'Turn music on' : 'Turn music off'} style={{
-        position: 'fixed', bottom: 14, right: 14, zIndex: 200,
+        position: 'fixed',
+        bottom: 'calc(14px + env(safe-area-inset-bottom))',
+        right: 'calc(14px + env(safe-area-inset-right))',
+        zIndex: 200,
         display: 'flex', alignItems: 'center', gap: 8,
         padding: m ? '0 14px' : '0 16px', height: m ? 48 : 54,
         borderRadius: 999,
@@ -355,7 +358,7 @@
     return (
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(8,4,2,0.82)', display: 'grid', placeItems: 'center', zIndex: 1000, padding: 12 }}>
         <div onClick={(e) => e.stopPropagation()} style={{
-          width: '100%', maxWidth: 640, maxHeight: '92vh', overflowY: 'auto',
+          width: '100%', maxWidth: 640, maxHeight: 'calc(var(--app-h) - 20px)', overflowY: 'auto',
           background: 'linear-gradient(180deg, #1a0f0a, #0d0704)', color: '#fdf3dc',
           border: `4px solid ${GOLD}`, borderRadius: 24,
           boxShadow: `0 0 0 1px ${GOLD}55, 0 30px 90px rgba(0,0,0,0.8), inset 0 0 60px ${GOLD}11`,
@@ -675,7 +678,7 @@
     return (
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(20,12,6,0.7)', display: 'grid', placeItems: 'center', zIndex: 1000, padding: 12, fontFamily: '"Nunito", sans-serif' }}>
         <div onClick={(e) => e.stopPropagation()} style={{
-          width: '100%', maxWidth: 720, maxHeight: '92vh', overflow: 'hidden',
+          width: '100%', maxWidth: 720, maxHeight: 'calc(var(--app-h) - 20px)', overflow: 'hidden',
           display: 'flex', flexDirection: 'column',
           background: P.paper, color: P.ink,
           border: `4px solid ${P.ink}`, borderRadius: 24,
@@ -839,7 +842,7 @@
     return (
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(8,4,2,0.82)', display: 'grid', placeItems: 'center', zIndex: 1000, padding: 12 }}>
         <div onClick={(e) => e.stopPropagation()} style={{
-          width: '100%', maxWidth: 640, maxHeight: '92vh', overflowY: 'auto',
+          width: '100%', maxWidth: 640, maxHeight: 'calc(var(--app-h) - 20px)', overflowY: 'auto',
           background: 'linear-gradient(180deg, #1a0f0a, #0d0704)', color: '#fdf3dc',
           border: `4px solid ${GOLD}`, borderRadius: 24,
           boxShadow: `0 0 0 1px ${GOLD}55, 0 30px 90px rgba(0,0,0,0.8), inset 0 0 60px ${GOLD}11`,

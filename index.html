@@ -9,6 +9,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
 <style>
+  /* Dynamic viewport height: phones report 100vh as the screen WITH the
+     address bar hidden, which hides bottom content. 100dvh tracks the real
+     visible area. Fallback to 100vh on old browsers. */
+  :root { --app-h: 100vh; }
+  @supports (height: 100dvh) { :root { --app-h: 100dvh; } }
+
   html, body { margin: 0; min-height: 100%; }
   body {
     font-family: "Nunito", system-ui, sans-serif;
@@ -17,7 +23,8 @@
       radial-gradient(circle at 15% 12%, #f6c25a44, transparent 50%),
       radial-gradient(circle at 85% 88%, #6a9a3a33, transparent 50%),
       #f5ead0;
-    min-height: 100vh;
+    min-height: var(--app-h);
+    -webkit-text-size-adjust: 100%;  /* stop iOS auto-inflating text */
   }
   * { box-sizing: border-box; }
   ::selection { background: #e8702b; color: #fff; }
@@ -40,21 +47,25 @@
   }
   #stage > #root { width: 100%; height: 100%; }
 
-  /* MOBILE: drop the frame, let the app fill the screen */
+  /* MOBILE + small windows: drop the frame, let the app fill the screen */
   @media (max-width: 1024px) {
     html, body { overflow-x: hidden; }
-    body { overflow-y: auto; }
+    body {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: none;   /* stop rubber-band flicker */
+    }
     #stage-wrap {
       position: static; inset: auto; padding: 0;
       display: block;
     }
     #stage {
-      width: 100%; height: auto; min-height: 100vh;
+      width: 100%; height: auto; min-height: var(--app-h);
       border-radius: 0; border: none; box-shadow: none;
       transform: none !important;
       background: transparent;
     }
-    #stage > #root { height: auto; min-height: 100vh; }
+    #stage > #root { height: auto; min-height: var(--app-h); }
   }
 </style>
 

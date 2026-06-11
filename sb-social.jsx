@@ -254,7 +254,7 @@
     const list = msgs.slice().reverse();
     return (
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(20,12,6,0.55)', display: 'grid', placeItems: 'center', zIndex: 50, padding: 14 }}>
-        <div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: 460, maxHeight: '86vh', overflowY: 'auto', background: P.paper, border: `4px solid ${P.ink}`, borderRadius: 22, boxShadow: `0 10px 0 ${P.ink}`, padding: m ? 18 : 24 }}>
+        <div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: 460, maxHeight: 'calc(var(--app-h) - 20px)', overflowY: 'auto', background: P.paper, border: `4px solid ${P.ink}`, borderRadius: 22, boxShadow: `0 10px 0 ${P.ink}`, padding: m ? 18 : 24 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <div style={{ fontFamily: FR, fontSize: m ? 24 : 28, fontWeight: 900, color: P.ink }}>✉ Your cheers</div>
             <button onClick={onClose} style={{ ...S.secondaryBtn(P, m), padding: '8px 14px' }}>✕</button>
@@ -291,7 +291,7 @@
 
     return (
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(20,12,6,0.65)', display: 'grid', placeItems: 'center', zIndex: 999, padding: 12 }}>
-        <div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: 780, maxHeight: '92vh', overflowY: 'auto', background: '#2a1810', color: '#fdf3dc', border: `4px solid ${P.warm}88`, borderRadius: 24, boxShadow: '0 24px 80px rgba(0,0,0,0.7)', fontFamily: NU }}>
+        <div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: 780, maxHeight: 'calc(var(--app-h) - 20px)', overflowY: 'auto', background: '#2a1810', color: '#fdf3dc', border: `4px solid ${P.warm}88`, borderRadius: 24, boxShadow: '0 24px 80px rgba(0,0,0,0.7)', fontFamily: NU }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: m ? '16px 18px' : '20px 26px', borderBottom: `2px dashed ${P.warm}44` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ fontSize: m ? 28 : 36 }}>🔒</div>

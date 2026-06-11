@@ -35,13 +35,19 @@
   const NU = '"Nunito", system-ui, sans-serif';
 
   // Page region. Desktop = absolute fill (optionally scroll); mobile = flow.
+  // Mobile uses --app-h (dynamic viewport height) so the bottom never hides
+  // behind the phone's address bar, plus safe-area insets for notch/home-bar.
   function Screen({ m, children, style = {}, padding, scroll }) {
+    const pad = padding ?? (m ? '18px 14px' : '30px 48px');
     return (
       <div style={{
         position: m ? 'relative' : 'absolute',
         inset: m ? undefined : 0,
-        width: '100%', minHeight: m ? '100vh' : 'auto',
-        padding: padding ?? (m ? '18px 14px' : '30px 48px'),
+        width: '100%', minHeight: m ? 'var(--app-h)' : 'auto',
+        padding: pad,
+        paddingLeft: m ? 'calc(14px + env(safe-area-inset-left))' : undefined,
+        paddingRight: m ? 'calc(14px + env(safe-area-inset-right))' : undefined,
+        paddingBottom: m ? 'calc(22px + env(safe-area-inset-bottom))' : undefined,
         boxSizing: 'border-box',
         overflowY: scroll ? 'auto' : undefined,
         WebkitOverflowScrolling: scroll ? 'touch' : undefined,

@@ -217,6 +217,7 @@
             position: 'fixed', top: 0, left: 0, right: 0, zIndex: 300,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: m ? 8 : 14,
             padding: m ? '7px 10px' : '9px 16px',
+            paddingTop: `calc(${m ? 7 : 9}px + env(safe-area-inset-top))`,
             background: P.ink, color: P.paper,
             fontFamily: S.NU, fontWeight: 900, fontSize: m ? 12 : 14,
             boxShadow: '0 3px 10px rgba(0,0,0,0.25)', flexWrap: 'wrap',
@@ -243,7 +244,10 @@
         {/* Dark / light toggle — available to everyone (locked when the teacher forces it) */}
         <button onClick={() => !themeForced && setDark((v) => !v)} disabled={themeForced}
           title={themeForced ? 'Appearance set by MC aayansh' : (effDark ? 'Light mode' : 'Dark mode')} style={{
-          position: 'fixed', bottom: 14, left: 14, zIndex: 200,
+          position: 'fixed',
+          bottom: 'calc(14px + env(safe-area-inset-bottom))',
+          left: 'calc(14px + env(safe-area-inset-left))',
+          zIndex: 200,
           width: m ? 46 : 52, height: m ? 46 : 52, borderRadius: '50%',
           background: effDark ? P.surface : '#fff', color: P.ink,
           border: `3px solid ${P.ink}`, boxShadow: `0 4px 0 ${P.ink}`,
