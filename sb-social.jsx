@@ -32,7 +32,7 @@
     const leadClass = classTotals['6M'] === classTotals['6BC'] ? null : (classTotals['6M'] > classTotals['6BC'] ? '6M' : '6BC');
 
     return (
-      <S.Screen m={m} scroll padding={m ? '16px 14px 88px' : '22px 40px 84px'} style={{ display: 'flex', flexDirection: 'column', gap: m ? 12 : 16, animation: `sb-pop ${dur(380)} ease-out both` }}>
+      <S.Screen m={m} scroll padding={m ? '18px 18px 90px' : '40px 64px 88px'} style={{ display: 'flex', flexDirection: 'column', gap: m ? 12 : 16, animation: `sb-pop ${dur(380)} ease-out both` }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: m ? 'flex-start' : 'center', justifyContent: 'space-between', gap: 10, flexDirection: m ? 'column' : 'row' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: m ? 10 : 14 }}>

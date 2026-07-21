@@ -266,9 +266,9 @@
     };
     return (
       <button onClick={toggle} title={muted ? 'Turn music on' : 'Turn music off'} style={{
-        position: 'fixed',
-        bottom: 'calc(14px + env(safe-area-inset-bottom))',
-        right: 'calc(14px + env(safe-area-inset-right))',
+        position: m ? 'fixed' : 'absolute',
+        bottom: m ? 'calc(14px + env(safe-area-inset-bottom))' : 20,
+        right: m ? 'calc(14px + env(safe-area-inset-right))' : 20,
         zIndex: 200,
         display: 'flex', alignItems: 'center', gap: 8,
         padding: m ? '0 14px' : '0 16px', height: m ? 48 : 54,

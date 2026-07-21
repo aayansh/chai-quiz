@@ -244,9 +244,9 @@
         {/* Dark / light toggle — available to everyone (locked when the teacher forces it) */}
         <button onClick={() => !themeForced && setDark((v) => !v)} disabled={themeForced}
           title={themeForced ? 'Appearance set by the MC' : (effDark ? 'Light mode' : 'Dark mode')} style={{
-          position: 'fixed',
-          bottom: 'calc(14px + env(safe-area-inset-bottom))',
-          left: 'calc(14px + env(safe-area-inset-left))',
+          position: m ? 'fixed' : 'absolute',
+          bottom: m ? 'calc(14px + env(safe-area-inset-bottom))' : 20,
+          left: m ? 'calc(14px + env(safe-area-inset-left))' : 20,
           zIndex: 200,
           width: m ? 46 : 52, height: m ? 46 : 52, borderRadius: '50%',
           background: effDark ? P.surface : '#fff', color: P.ink,
