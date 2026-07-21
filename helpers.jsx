@@ -334,11 +334,12 @@
 
   // ── Master ("all-might") auth — separate secret, only the owner knows
   const MASTER_KEY = 'chai-quiz-master-v1';
-  const DEFAULT_MASTER = { password: 'godchai' };
+  const DEFAULT_MASTER = { password: 'godchai', name: 'MC' };
   function loadMaster() { try { const r = localStorage.getItem(MASTER_KEY); return { ...DEFAULT_MASTER, ...(r ? JSON.parse(r) : {}) }; } catch (e) { return { ...DEFAULT_MASTER }; } }
   function saveMaster(a) { const m = { ...loadMaster(), ...a }; try { localStorage.setItem(MASTER_KEY, JSON.stringify(m)); } catch (e) {} return m; }
   function checkMasterPassword(pw) { return (pw || '') === loadMaster().password; }
-  Object.assign(window, { loadMaster, saveMaster, checkMasterPassword });
+  function getMcName() { const n = (loadMaster().name || 'MC').trim(); return n || 'MC'; }
+  Object.assign(window, { loadMaster, saveMaster, checkMasterPassword, getMcName });
 
   // ── Device lock — one laptop = one player (anti-cheat) ─────────
   // Locks live in each laptop's localStorage. God-mode frees them remotely

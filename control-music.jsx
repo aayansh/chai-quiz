@@ -302,7 +302,7 @@
           <p style={{ fontSize: m ? 17 : 22, fontWeight: 700, opacity: 0.9, maxWidth: 520, margin: '0 auto' }}>
             {control.freezeMsg && control.freezeMsg.trim()
               ? control.freezeMsg
-              : 'MC aayansh has paused the quiz. Look up here for a sec! 👀'}
+              : 'The MC has paused the quiz. Look up here for a sec! 👀'}
           </p>
           <div style={{ marginTop: 18, display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 16px', background: 'rgba(255,255,255,0.12)', borderRadius: 999, fontSize: m ? 13 : 15, fontWeight: 800 }}>
             <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#ff8b6a', boxShadow: '0 0 0 4px rgba(255,139,106,0.25)' }} />
@@ -404,6 +404,8 @@
     const [customName, setCustomName] = useState(control.customName || '');
     const [pwNew, setPwNew] = useState('');
     const [pwSaved, setPwSaved] = useState(false);
+    const [mcNew, setMcNew] = useState(window.getMcName ? window.getMcName() : 'MC');
+    const [mcSaved, setMcSaved] = useState(false);
     const [deviceReset, setDeviceReset] = useState(false);
     const [allReset, setAllReset] = useState(false);
     useEffect(() => { const u = window.subscribeControl(setControl); return u; }, []);
@@ -541,6 +543,22 @@
           </div>
         </section>
 
+        {/* MC NAME */}
+        <section>
+          <div style={mTitle(GOLD)}>🎤 Your MC name</div>
+          <div style={mCard(GOLD)}>
+            <input type="text" value={mcNew} maxLength={20} onChange={(e) => { setMcNew(e.target.value); setMcSaved(false); }} placeholder="e.g. MC Priya"
+              style={{ width: '100%', boxSizing: 'border-box', padding: '12px 14px', background: '#000', color: GOLD, border: `2px solid ${GOLD}55`, borderRadius: 10, fontSize: 16, fontWeight: 800, outline: 'none', fontFamily: 'inherit' }} />
+            <div style={{ marginTop: 10, display: 'flex', gap: 8, alignItems: 'center' }}>
+              <button onClick={() => { const n = mcNew.trim(); if (!n) { alert('Enter a name.'); return; } window.saveMaster({ name: n }); setMcSaved(true); }} style={goldBtn(GOLD, m)}>Save name</button>
+              {mcSaved && <span style={{ fontSize: 12, color: GOLD, fontWeight: 800 }}>✓ Saved!</span>}
+            </div>
+            <div style={{ marginTop: 10, fontSize: 12, opacity: 0.55, lineHeight: 1.5 }}>
+              This name shows on praise messages, the pause screen and the control room.
+            </div>
+          </div>
+        </section>
+
         {/* MASTER PASSWORD */}
         <section>
           <div style={mTitle(GOLD)}>🔑 Change master code</div>
@@ -582,13 +600,13 @@
           </div>
         </section>
 
-        {/* FULL MC AAYANSH TOOLS */}
+        {/* FULL MC TOOLS */}
         <section>
-          <div style={mTitle(GOLD)}>👑 MC aayansh tools (delete, edit, praise)</div>
+          <div style={mTitle(GOLD)}>👑 MC tools (delete, edit, praise)</div>
           <div style={{ ...mCard(GOLD), padding: 0, overflow: 'hidden' }}>
             {window.SBSocial && window.SBSocial.AdminBody
               ? <div style={{ padding: 14 }}><window.SBSocial.AdminBody P={P} m={m} /></div>
-              : <div style={{ padding: 14, fontSize: 13, opacity: 0.6 }}>MC aayansh tools unavailable.</div>}
+              : <div style={{ padding: 14, fontSize: 13, opacity: 0.6 }}>MC tools unavailable.</div>}
           </div>
         </section>
       </div>
@@ -622,16 +640,16 @@
       notes: ['67 levels of 5 questions each', 'Class battle: 6M vs 6BC', 'Send cheers & messages to each other'],
     },
     {
-      v: 'v2.1', name: 'Teacher Tools', emoji: '🔒',
-      notes: ['Ctrl+Shift+T teacher panel', 'Edit times, delete cheaters, send praise'],
+      v: 'v2.1', name: 'Star Keeper', emoji: '⭐',
+      notes: ['Scores saved per player', 'Edit times, remove cheaters, send praise'],
     },
     {
       v: 'v2.2', name: 'The Cloud', emoji: '☁️',
       notes: ['Firebase shared leaderboard', 'Every laptop sees the same scores live'],
     },
     {
-      v: 'v3.0', name: 'Teacher Powers', emoji: '⚡',
-      notes: ['Hidden teacher controls', 'Stop Everyone freeze button', 'One laptop = one player'],
+      v: 'v3.0', name: 'Big Powers', emoji: '⚡',
+      notes: ['Stop Everyone freeze button', 'One laptop = one player'],
     },
     {
       v: 'v3.1', name: 'Music & Power', emoji: '🎵',
@@ -766,7 +784,7 @@
                 )}
               </div>
               <div style={{ marginTop: 12, fontSize: 12.5, opacity: 0.6, fontWeight: 700, lineHeight: 1.5 }}>
-                Travelling gives the quiz an old-photo look from that era. MC aayansh can send the whole class to a version too.
+                Travelling gives the quiz an old-photo look from that era. The MC can send the whole class to a version too.
               </div>
             </div>
           </div>
@@ -778,7 +796,7 @@
   // ═══════════════════════════════════════════════════════════════
   // DECOY PANEL — opened by typing "67". Looks like a boring dead-end.
   // Secretly: type "chai" while it's open to reveal the full
-  // Godchai + MC aayansh combined control room.
+  // Godchai + MC combined control room.
   // ═══════════════════════════════════════════════════════════════
   function DecoyPanel({ P, m, onClose }) {
     const GOLD = '#f6c25a';
@@ -838,7 +856,7 @@
       );
     }
 
-    // Revealed: the real combined Godchai + MC aayansh room
+    // Revealed: the real combined Godchai + MC room
     return (
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(8,4,2,0.82)', display: 'grid', placeItems: 'center', zIndex: 1000, padding: 12 }}>
         <div onClick={(e) => e.stopPropagation()} style={{
@@ -852,7 +870,7 @@
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ fontSize: m ? 30 : 40 }}>👑</div>
               <div>
-                <div style={{ fontSize: m ? 10 : 12, letterSpacing: '0.3em', color: GOLD, fontWeight: 900, textTransform: 'uppercase' }}>Godchai + MC aayansh</div>
+                <div style={{ fontSize: m ? 10 : 12, letterSpacing: '0.3em', color: GOLD, fontWeight: 900, textTransform: 'uppercase' }}>Godchai + {window.getMcName ? window.getMcName() : 'MC'}</div>
                 <h2 style={{ fontFamily: '"Fraunces", serif', fontSize: m ? 24 : 32, margin: '2px 0 0', fontWeight: 900, color: '#fff' }}>Master Control Room</h2>
               </div>
             </div>

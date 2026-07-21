@@ -32,7 +32,7 @@
     const leadClass = classTotals['6M'] === classTotals['6BC'] ? null : (classTotals['6M'] > classTotals['6BC'] ? '6M' : '6BC');
 
     return (
-      <S.Screen m={m} scroll padding={m ? '16px 14px 24px' : '22px 40px 28px'} style={{ display: 'flex', flexDirection: 'column', gap: m ? 12 : 16, animation: `sb-pop ${dur(380)} ease-out both` }}>
+      <S.Screen m={m} scroll padding={m ? '16px 14px 88px' : '22px 40px 84px'} style={{ display: 'flex', flexDirection: 'column', gap: m ? 12 : 16, animation: `sb-pop ${dur(380)} ease-out both` }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: m ? 'flex-start' : 'center', justifyContent: 'space-between', gap: 10, flexDirection: m ? 'column' : 'row' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: m ? 10 : 14 }}>
@@ -211,11 +211,14 @@
   function CheerPicker({ P, m, target, me, onClose }) {
     const [sent, setSent] = useState(false);
     const send = (text) => {
-      window.sendMessage({
-        fromName: me.name, fromClass: me.klass,
-        toType: 'player', toKey: target.key, text, kind: 'cheer',
-      });
-      window.sfx.chime();
+      const from = (me && me.name) ? me : { name: 'A friend', klass: 'Other' };
+      try {
+        window.sendMessage({
+          fromName: from.name, fromClass: from.klass,
+          toType: 'player', toKey: target.key, text, kind: 'cheer',
+        });
+        window.sfx && window.sfx.chime && window.sfx.chime();
+      } catch (e) { console.warn('cheer failed', e); }
       setSent(true);
       setTimeout(onClose, 700);
     };
@@ -296,7 +299,7 @@
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ fontSize: m ? 28 : 36 }}>🔒</div>
               <div>
-                <div style={{ fontSize: m ? 10 : 12, letterSpacing: '0.24em', color: P.warm, fontWeight: 900, textTransform: 'uppercase' }}>MC Aayansh Control Panel</div>
+                <div style={{ fontSize: m ? 10 : 12, letterSpacing: '0.24em', color: P.warm, fontWeight: 900, textTransform: 'uppercase' }}>{window.getMcName ? window.getMcName() : 'MC'} Control Panel</div>
                 <h2 style={{ fontFamily: FR, fontSize: m ? 24 : 30, margin: '2px 0 0', fontWeight: 900, color: '#fdf3dc' }}>Royal Chai Dashboard</h2>
               </div>
             </div>
@@ -305,7 +308,7 @@
           <div style={{ padding: m ? '18px' : '24px 26px 28px' }}>
             {!authed ? (
               <form onSubmit={tryLogin}>
-                <div style={{ fontSize: m ? 13 : 14, color: '#fdf3dcaa', marginBottom: 16 }}>For MC aayansh only. Enter the admin password.</div>
+                <div style={{ fontSize: m ? 13 : 14, color: '#fdf3dcaa', marginBottom: 16 }}>For the MC only. Enter the admin password.</div>
                 <div style={aLabel(P)}>Admin password</div>
                 <input type="password" autoFocus value={pw} onChange={(e) => setPw(e.target.value)} placeholder="••••••••" style={aInput(P)} />
                 {err && <div style={{ marginTop: 8, color: '#ffb09a', fontSize: 13, fontWeight: 800 }}>{err}</div>}
@@ -468,7 +471,7 @@
     const [sent, setSent] = useState(false);
     const doSend = (t) => {
       const body = (t || text).trim(); if (!body) return;
-      window.sendMessage({ fromName: 'MC aayansh', fromClass: 'Other', toType: to === 'all' ? 'all' : 'class', toKey: to === 'all' ? '' : to, text: body, kind: 'praise' });
+      window.sendMessage({ fromName: window.getMcName ? window.getMcName() : 'MC', fromClass: 'Other', toType: to === 'all' ? 'all' : 'class', toKey: to === 'all' ? '' : to, text: body, kind: 'praise' });
       setText(''); setSent(true); window.sfx.chime(); setTimeout(() => setSent(false), 1500);
     };
     return (
@@ -494,7 +497,7 @@
 
   function PraiseModal({ P, m, target, onClose }) {
     const send = (text) => {
-      window.sendMessage({ fromName: 'MC aayansh', fromClass: 'Other', toType: 'player', toKey: target.key, text, kind: 'praise' });
+      window.sendMessage({ fromName: window.getMcName ? window.getMcName() : 'MC', fromClass: 'Other', toType: 'player', toKey: target.key, text, kind: 'praise' });
       window.sfx.chime(); onClose();
     };
     const [text, setText] = useState('');

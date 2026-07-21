@@ -224,7 +224,7 @@
           }}>
             <span>🕰️ Time machine: <span style={{ color: P.warm }}>{skin.ver.v} · {skin.ver.name}</span></span>
             {verForced
-              ? <span style={{ opacity: 0.8, fontWeight: 800 }}>· set by MC aayansh</span>
+              ? <span style={{ opacity: 0.8, fontWeight: 800 }}>· set by the MC</span>
               : <button onClick={leaveVersion} style={{
                   padding: '4px 12px', borderRadius: 999, background: P.warm, color: P.ink,
                   border: 'none', fontWeight: 900, fontSize: m ? 11 : 13, cursor: 'pointer', fontFamily: 'inherit',
@@ -243,7 +243,7 @@
 
         {/* Dark / light toggle — available to everyone (locked when the teacher forces it) */}
         <button onClick={() => !themeForced && setDark((v) => !v)} disabled={themeForced}
-          title={themeForced ? 'Appearance set by MC aayansh' : (effDark ? 'Light mode' : 'Dark mode')} style={{
+          title={themeForced ? 'Appearance set by the MC' : (effDark ? 'Light mode' : 'Dark mode')} style={{
           position: 'fixed',
           bottom: 'calc(14px + env(safe-area-inset-bottom))',
           left: 'calc(14px + env(safe-area-inset-left))',

@@ -26,7 +26,20 @@
 
     function buildQs(lv) {
       if (!lv) return [];
-      return shuffle(lv.questions).map((q) => ({ ...q, options: shuffle(q.options) }));
+      const n = lv.questions.length || 5;
+      // Draw from the WHOLE question pool so each attempt is different —
+      // not just the same 5 reshuffled. Start from this level's own
+      // questions, then fill/replace from the global pool at random.
+      const pool = (window.CHAI_ALL_QUESTIONS || lv.questions).slice();
+      const picked = shuffle(pool).slice(0, n);
+      // Safety: if pool was somehow too small, top up from the level.
+      if (picked.length < n) {
+        for (const q of shuffle(lv.questions)) {
+          if (picked.length >= n) break;
+          if (!picked.includes(q)) picked.push(q);
+        }
+      }
+      return shuffle(picked).map((q) => ({ ...q, options: shuffle(q.options) }));
     }
 
     const restart = useCallback(() => {
