@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Upload to GitHub — Chai Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root{--ink:#3d2818;--paper:#fff5e0;--accent:#e8702b;--leaf:#6a9a3a;--warm:#f6c25a;--line:#d8c39a}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Nunito",system-ui,sans-serif;color:var(--ink);
+    background:radial-gradient(circle at 15% 10%,#f6c25a44,transparent 50%),radial-gradient(circle at 85% 90%,#6a9a3a33,transparent 50%),#f5ead0;
+    padding:32px 16px;line-height:1.5}
+  .wrap{max-width:760px;margin:0 auto}
+  h1{font-family:"Fraunces",serif;font-size:clamp(30px,6vw,48px);margin:0 0 6px;font-weight:900;letter-spacing:-.02em}
+  h1 em{font-style:normal;color:var(--accent)}
+  .sub{font-weight:800;opacity:.7;margin:0 0 26px}
+  .step{background:#fffdf7;border:3px solid var(--ink);border-radius:20px;box-shadow:0 6px 0 var(--ink);padding:20px 22px;margin:0 0 22px}
+  .head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .num{flex:none;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;
+    font-family:"Fraunces",serif;font-weight:900;font-size:22px;border:3px solid var(--ink);box-shadow:0 3px 0 var(--ink)}
+  .head h2{font-family:"Fraunces",serif;font-size:22px;margin:0;font-weight:900}
+  .step p{margin:0 0 12px}
+  code{background:#f0e6cd;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-weight:800;font-size:.92em}
+  .pic{width:100%;border:2px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;display:block}
+  kbd{background:#fff;border:2px solid var(--ink);border-radius:6px;padding:1px 8px;font-family:inherit;font-weight:900;box-shadow:0 2px 0 var(--ink);font-size:.9em}
+  .tip{background:var(--warm);border:2px dashed var(--ink);border-radius:12px;padding:12px 16px;font-weight:800;margin-top:6px}
+  .done{background:var(--leaf);color:#fff;border:3px solid var(--ink);border-radius:20px;box-shadow:0 6px 0 var(--ink);
+    padding:22px;text-align:center;font-family:"Fraunces",serif;font-size:24px;font-weight:900}
+  .url{background:var(--ink);color:var(--warm);border-radius:10px;padding:10px 14px;font-weight:800;text-align:center;margin-top:10px;word-break:break-all}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Put <em>Chai Quiz</em> on GitHub</h1>
+  <p class="sub">5 easy steps · updates your live site in about a minute</p>
+
+  <div class="step">
+    <div class="head"><div class="num">1</div><h2>Unzip the download</h2></div>
+    <p>Open the file I gave you (<code>deploy.zip</code> or the folder card) and <b>unzip</b> it. You'll see the game files inside — <code>index.html</code>, <code>helpers.jsx</code>, <code>sb-social.jsx</code>, and the rest.</p>
+    <svg class="pic" viewBox="0 0 600 150" xmlns="http://www.w3.org/2000/svg">
+      <rect width="600" height="150" fill="#fbf6e9"/>
+      <rect x="24" y="30" width="90" height="90" rx="8" fill="#f6c25a" stroke="#3d2818" stroke-width="3"/>
+      <text x="69" y="82" font-family="Nunito" font-size="30" font-weight="900" text-anchor="middle" fill="#3d2818">ZIP</text>
+      <path d="M140 75 h70" stroke="#3d2818" stroke-width="4" fill="none" marker-end="url(#a)"/>
+      <defs><marker id="a" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#3d2818"/></marker></defs>
+      <g font-family="Nunito" font-size="13" font-weight="800" fill="#3d2818">
+        <rect x="235" y="26" width="150" height="26" rx="5" fill="#fff" stroke="#d8c39a" stroke-width="2"/><text x="245" y="44">📄 index.html</text>
+        <rect x="235" y="58" width="150" height="26" rx="5" fill="#fff" stroke="#d8c39a" stroke-width="2"/><text x="245" y="76">📄 helpers.jsx</text>
+        <rect x="235" y="90" width="150" height="26" rx="5" fill="#fff" stroke="#d8c39a" stroke-width="2"/><text x="245" y="108">📄 sb-social.jsx …</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="step">
+    <div class="head"><div class="num">2</div><h2>Open your repo → Add file</h2></div>
+    <p>Go to <code>github.com/aayansh/chai-quiz</code>. Click the <b>Add file</b> button (top-right), then <b>Upload files</b>.</p>
+    <svg class="pic" viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg">
+      <rect width="600" height="120" fill="#fbf6e9"/>
+      <rect x="20" y="20" width="560" height="80" rx="8" fill="#fff" stroke="#d8c39a" stroke-width="2"/>
+      <text x="36" y="52" font-family="Nunito" font-size="16" font-weight="900" fill="#3d2818">📁 chai-quiz</text>
+      <rect x="400" y="34" width="120" height="34" rx="7" fill="#6a9a3a" stroke="#3d2818" stroke-width="2"/>
+      <text x="460" y="56" font-family="Nunito" font-size="14" font-weight="900" text-anchor="middle" fill="#fff">Add file ▾</text>
+      <rect x="400" y="70" width="150" height="30" rx="6" fill="#fff" stroke="#3d2818" stroke-width="2"/>
+      <text x="412" y="90" font-family="Nunito" font-size="13" font-weight="800" fill="#3d2818">⬆ Upload files</text>
+    </svg>
+  </div>
+
+  <div class="step">
+    <div class="head"><div class="num">3</div><h2>Select all files &amp; drag them in</h2></div>
+    <p>Open the unzipped folder, press <kbd>Ctrl</kbd>+<kbd>A</kbd> (or <kbd>⌘</kbd>+<kbd>A</kbd> on Mac) to select <b>every file inside</b>, then drag them onto the GitHub upload box.</p>
+    <div class="tip">⚠️ Drag the <b>files themselves</b> — not the folder around them.</div>
+    <svg class="pic" viewBox="0 0 600 130" xmlns="http://www.w3.org/2000/svg" style="margin-top:12px">
+      <rect width="600" height="130" fill="#fbf6e9"/>
+      <rect x="40" y="22" width="520" height="86" rx="12" fill="#fff" stroke="#3d2818" stroke-width="3" stroke-dasharray="9 7"/>
+      <text x="300" y="60" font-family="Nunito" font-size="16" font-weight="900" text-anchor="middle" fill="#3d2818">⬆ Drag your files here</text>
+      <text x="300" y="84" font-family="Nunito" font-size="12" font-weight="800" text-anchor="middle" fill="#8a7a55">or choose your files</text>
+    </svg>
+  </div>
+
+  <div class="step">
+    <div class="head"><div class="num">4</div><h2>Overwrite &amp; Commit</h2></div>
+    <p>If GitHub asks to replace the old files, say <b>yes / overwrite</b>. Scroll down and click the green <b>Commit changes</b> button.</p>
+    <svg class="pic" viewBox="0 0 600 90" xmlns="http://www.w3.org/2000/svg">
+      <rect width="600" height="90" fill="#fbf6e9"/>
+      <rect x="180" y="28" width="240" height="40" rx="9" fill="#6a9a3a" stroke="#3d2818" stroke-width="3"/>
+      <text x="300" y="54" font-family="Nunito" font-size="17" font-weight="900" text-anchor="middle" fill="#fff">Commit changes</text>
+    </svg>
+  </div>
+
+  <div class="step">
+    <div class="head"><div class="num">5</div><h2>Wait a minute, then hard-refresh</h2></div>
+    <p>Give it ~1 minute. Then open your site and do a <b>hard refresh</b> to clear the old cached version:</p>
+    <p style="text-align:center"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> &nbsp;(Windows/Chromebook) &nbsp;·&nbsp; <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> (Mac)</p>
+    <div class="url">https://aayansh.github.io/chai-quiz</div>
+  </div>
+
+  <div class="done">✅ Done — your class sees the new version!</div>
+</div>
+</body>
+</html>

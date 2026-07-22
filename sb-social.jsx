@@ -32,7 +32,8 @@
     const leadClass = classTotals['6M'] === classTotals['6BC'] ? null : (classTotals['6M'] > classTotals['6BC'] ? '6M' : '6BC');
 
     return (
-      <S.Screen m={m} scroll padding={m ? '18px 18px 90px' : '40px 64px 88px'} style={{ display: 'flex', flexDirection: 'column', gap: m ? 12 : 16, animation: `sb-pop ${dur(380)} ease-out both` }}>
+      <S.Screen m={m} scroll padding={m ? '18px 16px 90px' : '36px 48px 84px'} style={{ animation: `sb-pop ${dur(380)} ease-out both` }}>
+      <div style={{ width: '100%', maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: m ? 12 : 16 }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: m ? 'flex-start' : 'center', justifyContent: 'space-between', gap: 10, flexDirection: m ? 'column' : 'row' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: m ? 10 : 14 }}>
@@ -128,6 +129,7 @@
         {cheerFor && (
           <CheerPicker P={P} m={m} target={cheerFor} me={player} onClose={() => setCheerFor(null)} />
         )}
+      </div>
       </S.Screen>
     );
   }
