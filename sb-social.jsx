@@ -475,6 +475,7 @@
           const entries = ((log[id] && log[id].entries) || []).slice().reverse();
           const banned = bans[id];
           const adminOff = (ctrl.adminOff || {})[id];
+          const owner = entries[0] || null; // most recent sign-in = whose laptop it is
           return (
             <div key={id} style={{
               ...aCard(P),
@@ -483,6 +484,13 @@
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
                 <span style={{ fontFamily: FR, fontWeight: 900, fontSize: 15, color: banned ? '#ffb09a' : P.warm }}>{id}</span>
+                {owner && (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12.5, fontWeight: 900 }}>
+                    <span style={{ opacity: 0.5 }}>→</span>
+                    <span>{owner.name}</span>
+                    <span style={{ padding: '1px 7px', borderRadius: 99, background: owner.klass === '6BC' ? P.accent : P.leaf, color: '#fff', fontSize: 10 }}>{owner.klass}</span>
+                  </span>
+                )}
                 {id === myId && <span style={{ fontSize: 10, fontWeight: 900, padding: '2px 8px', borderRadius: 99, background: P.warm, color: '#1d100a' }}>THIS LAPTOP</span>}
                 {adminOff && <span style={{ fontSize: 10, fontWeight: 900, padding: '2px 8px', borderRadius: 99, background: '#ffd27a', color: '#3a2a08' }}>NO ADMIN</span>}
                 {banned && <span style={{ fontSize: 10, fontWeight: 900, padding: '2px 8px', borderRadius: 99, background: '#b73a1a', color: '#fff' }}>BLOCKED</span>}
@@ -523,7 +531,22 @@
             </div>
           );
         })}
-        <button onClick={() => { if (confirm('Clear all laptop history? (Blocks stay in place.)')) { window.clearDeviceLog(); force((n) => n + 1); } }} style={aGhost(P, m)}>Clear history</button>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <button onClick={() => {
+            const open = ids.filter((id) => !bans[id]);
+            if (!open.length) { alert('Every laptop is already blocked.'); return; }
+            const why = prompt(`Permanently block ALL ${open.length} laptop(s)?\n\nNobody will be able to play until you unblock them.\n\nOptional reason shown on their screens:`, '');
+            if (why === null) return;
+            open.forEach((id) => window.banDevice(id, why));
+          }} style={{ ...aMini(P, '#fff', '#c0392b'), width: 'auto', height: 'auto', padding: '9px 16px', fontSize: 12.5, border: '2px solid #ff8b6a', borderRadius: 999 }}>⛔ Block ALL laptops</button>
+          <button onClick={() => {
+            const blocked = Object.keys(bans);
+            if (!blocked.length) { alert('No laptops are blocked.'); return; }
+            if (!confirm(`Unblock all ${blocked.length} blocked laptop(s)?`)) return;
+            blocked.forEach((id) => window.unbanDevice(id));
+          }} style={{ ...aMini(P, '#9fc972', '#1f3d2a'), width: 'auto', height: 'auto', padding: '9px 16px', fontSize: 12.5, borderRadius: 999 }}>✓ Unblock all</button>
+          <button onClick={() => { if (confirm('Clear all laptop history? (Blocks stay in place.)')) { window.clearDeviceLog(); force((n) => n + 1); } }} style={aGhost(P, m)}>Clear history</button>
+        </div>
       </div>
     );
   }
