@@ -93,7 +93,7 @@
   const PLAYERS_KEY = 'chai-quiz-players-v2';
   const MSG_KEY = 'chai-quiz-messages-v2';
   const CONTROL_KEY = 'chai-quiz-control-v2';
-  const DEFAULT_CONTROL = { frozen: false, freezeMsg: '', musicEnabled: false, track: 'custom', customUrl: '', customName: '', unlockAllTs: 0, unlockKeys: {}, forceTheme: '', bans: {}, appVersion: '' };
+  const DEFAULT_CONTROL = { frozen: false, freezeMsg: '', musicEnabled: false, track: 'custom', customUrl: '', customName: '', unlockAllTs: 0, unlockKeys: {}, forceTheme: '', bans: {}, appVersion: '', deviceBans: {}, deviceLog: {}, adminPw: '', masterPw: '', adminOff: {} };
 
   let _players = (() => { try { return JSON.parse(localStorage.getItem(PLAYERS_KEY)) || {}; } catch (e) { return {}; } })();
   let _messages = (() => { try { return JSON.parse(localStorage.getItem(MSG_KEY)) || []; } catch (e) { return []; } })();
@@ -300,11 +300,19 @@
 
   // ── Admin auth (local only — kid-deterrent) ───────────────────
   const ADMIN_KEY = 'chai-quiz-admin-v1';
-  const DEFAULT_ADMIN = { password: 'chai' };
+  const DEFAULT_ADMIN = { password: 'chaiboss' };
   function loadAdmin() { try { const r = localStorage.getItem(ADMIN_KEY); return { ...DEFAULT_ADMIN, ...(r ? JSON.parse(r) : {}) }; } catch (e) { return { ...DEFAULT_ADMIN }; } }
-  function saveAdmin(a) { const m = { ...loadAdmin(), ...a }; try { localStorage.setItem(ADMIN_KEY, JSON.stringify(m)); } catch (e) {} return m; }
-  function checkAdminPassword(pw) { return (pw || '') === loadAdmin().password; }
-  Object.assign(window, { loadAdmin, saveAdmin, checkAdminPassword });
+  // Password lives in the SYNCED control block so a rename works on every
+  // laptop, not just the one that typed it. Local copy is a fallback.
+  function adminPassword() { return (_control && _control.adminPw) || loadAdmin().password || DEFAULT_ADMIN.password; }
+  function saveAdmin(a) {
+    const m = { ...loadAdmin(), ...a };
+    try { localStorage.setItem(ADMIN_KEY, JSON.stringify(m)); } catch (e) {}
+    if (a && a.password) setControl({ adminPw: a.password });
+    return m;
+  }
+  function checkAdminPassword(pw) { return (pw || '') === adminPassword(); }
+  Object.assign(window, { loadAdmin, saveAdmin, checkAdminPassword, adminPassword });
 
   // ── Global control (freeze + music) ───────────────────────────
   function getControl() { return { ..._control }; }
@@ -334,12 +342,18 @@
 
   // ── Master ("all-might") auth — separate secret, only the owner knows
   const MASTER_KEY = 'chai-quiz-master-v1';
-  const DEFAULT_MASTER = { password: 'godchai', name: 'MC' };
+  const DEFAULT_MASTER = { password: 'chaigod', name: 'MC' };
   function loadMaster() { try { const r = localStorage.getItem(MASTER_KEY); return { ...DEFAULT_MASTER, ...(r ? JSON.parse(r) : {}) }; } catch (e) { return { ...DEFAULT_MASTER }; } }
-  function saveMaster(a) { const m = { ...loadMaster(), ...a }; try { localStorage.setItem(MASTER_KEY, JSON.stringify(m)); } catch (e) {} return m; }
-  function checkMasterPassword(pw) { return (pw || '') === loadMaster().password; }
+  function masterPassword() { return (_control && _control.masterPw) || loadMaster().password || DEFAULT_MASTER.password; }
+  function saveMaster(a) {
+    const m = { ...loadMaster(), ...a };
+    try { localStorage.setItem(MASTER_KEY, JSON.stringify(m)); } catch (e) {}
+    if (a && a.password) setControl({ masterPw: a.password });
+    return m;
+  }
+  function checkMasterPassword(pw) { return (pw || '') === masterPassword(); }
   function getMcName() { const n = (loadMaster().name || 'MC').trim(); return n || 'MC'; }
-  Object.assign(window, { loadMaster, saveMaster, checkMasterPassword, getMcName });
+  Object.assign(window, { loadMaster, saveMaster, checkMasterPassword, getMcName, masterPassword });
 
   // ── Device lock — one laptop = one player (anti-cheat) ─────────
   // Locks live in each laptop's localStorage. God-mode frees them remotely
@@ -347,13 +361,83 @@
   //   control.unlockAllTs       — any laptop locked before this frees itself
   //   control.unlockKeys[key]   — the laptop bound to that player frees itself
   const DEVICE_KEY = 'chai-quiz-device-v1';
+  const DEVID_KEY = 'chai-quiz-devid-v1';
+
+  // Stable id for THIS laptop, so it can be banned / have a history.
+  function getDeviceId() {
+    try {
+      let id = localStorage.getItem(DEVID_KEY);
+      if (!id) {
+        id = 'L-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+        localStorage.setItem(DEVID_KEY, id);
+      }
+      return id;
+    } catch (e) { return 'L-TEMP'; }
+  }
+
   function getDeviceLock() { try { return JSON.parse(localStorage.getItem(DEVICE_KEY)) || null; } catch (e) { return null; } }
   function setDeviceLock(name, klass) {
     const v = { key: playerKey(name, klass), name: (name || '').trim().slice(0, 24), klass: normalizeClass(klass), ts: Date.now() };
     try { localStorage.setItem(DEVICE_KEY, JSON.stringify(v)); } catch (e) {}
+    logDeviceUse(v.name, v.klass);
     return v;
   }
   function clearDeviceLock() { try { localStorage.removeItem(DEVICE_KEY); } catch (e) {} }
+
+  // ── Laptop history (synced, so the MC can review from anywhere) ──
+  function logDeviceUse(name, klass) {
+    const id = getDeviceId();
+    const cur = getControl();
+    const log = { ...(cur.deviceLog || {}) };
+    const entries = (log[id] && log[id].entries) || [];
+    const last = entries[entries.length - 1];
+    // don't spam duplicates for the same player within 2 minutes
+    if (last && last.name === name && last.klass === klass && Date.now() - (last.ts || 0) < 120000) return;
+    const next = [...entries, { name, klass, ts: Date.now() }].slice(-12);
+    log[id] = { entries: next, lastTs: Date.now() };
+    setControl({ deviceLog: log });
+  }
+  function getDeviceLog() { return (getControl().deviceLog) || {}; }
+  function clearDeviceLog(id) {
+    const log = { ...(getControl().deviceLog || {}) };
+    if (id) delete log[id]; else Object.keys(log).forEach((k) => delete log[k]);
+    return setControl({ deviceLog: log });
+  }
+
+  // ── Permanent laptop ban (synced) ───────────────────────────────
+  function banDevice(id, note) {
+    if (!id) return;
+    const bans = { ...(getControl().deviceBans || {}) };
+    bans[id] = { ts: Date.now(), note: (note || '').slice(0, 80) };
+    return setControl({ deviceBans: bans });
+  }
+  function unbanDevice(id) {
+    const bans = { ...(getControl().deviceBans || {}) };
+    delete bans[id];
+    return setControl({ deviceBans: bans });
+  }
+  function isDeviceBanned(control) {
+    const c = control || getControl();
+    const b = c.deviceBans && c.deviceBans[getDeviceId()];
+    return b ? b : null;
+  }
+
+  // ── Disable ADMIN POWERS on one laptop (they can still play) ────
+  // Use this on a corrupt admin: their device can no longer open the
+  // admin panel, the master room, or the decoy control room.
+  function setAdminDisabled(id, off, note) {
+    if (!id) return;
+    const map = { ...(getControl().adminOff || {}) };
+    if (off) map[id] = { ts: Date.now(), note: (note || '').slice(0, 80) };
+    else delete map[id];
+    return setControl({ adminOff: map });
+  }
+  function isAdminDisabled(control) {
+    const c = control || getControl();
+    const v = c.adminOff && c.adminOff[getDeviceId()];
+    return v ? v : null;
+  }
+  Object.assign(window, { setAdminDisabled, isAdminDisabled });
 
   // Called whenever control changes — frees THIS laptop if god-mode asked.
   // Returns true if it just unlocked (so the UI can react).
@@ -376,7 +460,7 @@
     return setControl({ unlockKeys: next });
   }
 
-  Object.assign(window, { getDeviceLock, setDeviceLock, clearDeviceLock, applyRemoteUnlocks, freeAllLaptops, freeLaptopFor });
+  Object.assign(window, { getDeviceLock, setDeviceLock, clearDeviceLock, applyRemoteUnlocks, freeAllLaptops, freeLaptopFor, getDeviceId, getDeviceLog, clearDeviceLog, banDevice, unbanDevice, isDeviceBanned });
 
   // ── Personal "time machine" version (per device) ──────────────
   // '' = latest. Admin can override everyone via control.appVersion.

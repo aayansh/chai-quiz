@@ -38,6 +38,7 @@
     const [adminOpen, setAdminOpen] = useState(false);
     const [masterOpen, setMasterOpen] = useState(false);
     const [decoyOpen, setDecoyOpen] = useState(false);
+    const [powersOff, setPowersOff] = useState(false);
     const [memoriesOpen, setMemoriesOpen] = useState(false);
     const [inboxOpen, setInboxOpen] = useState(false);
     const [inboxCount, setInboxCount] = useState(0);
@@ -55,7 +56,7 @@
     useEffect(() => {
       const h = (e) => {
         const k = (e.key || '').toLowerCase();
-        if (e.ctrlKey && e.shiftKey && k === 't') { e.preventDefault(); setAdminOpen((v) => !v); }
+        if (e.ctrlKey && e.shiftKey && k === 't') { e.preventDefault(); if (window.isAdminDisabled && window.isAdminDisabled()) { setPowersOff(true); return; } setAdminOpen((v) => !v); }
       };
       window.addEventListener('keydown', h);
       return () => window.removeEventListener('keydown', h);
@@ -70,9 +71,9 @@
         if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) return;
         if (e.key && e.key.length === 1) {
           buf = (buf + e.key.toLowerCase()).slice(-10);
-          if (buf.endsWith('kettle')) { buf = ''; setMasterOpen(true); }
+          if (buf.endsWith('kettle')) { buf = ''; if (window.isAdminDisabled && window.isAdminDisabled()) setPowersOff(true); else setMasterOpen(true); }
           else if (buf.endsWith('memories')) { buf = ''; setMemoriesOpen(true); }
-          else if (buf.endsWith('67')) { buf = ''; setDecoyOpen(true); }
+          else if (buf.endsWith('67')) { buf = ''; if (window.isAdminDisabled && window.isAdminDisabled()) setPowersOff(true); else setDecoyOpen(true); }
         }
       };
       window.addEventListener('keydown', onKey);
@@ -236,6 +237,19 @@
         {adminOpen && <So.AdminPanel P={P} m={m} onClose={() => setAdminOpen(false)} />}
         {masterOpen && <window.SBMaster.MasterPanel P={P} m={m} onClose={() => setMasterOpen(false)} />}
         {decoyOpen && <window.SBMaster.DecoyPanel P={P} m={m} onClose={() => setDecoyOpen(false)} />}
+        {powersOff && (
+          <div onClick={() => setPowersOff(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(10,6,4,0.8)', display: 'grid', placeItems: 'center', zIndex: 1000, padding: 16, fontFamily: S.NU }}>
+            <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: 400, textAlign: 'center', background: '#2a1810', color: '#fdf3dc', border: '3px solid #ffb09a', borderRadius: 20, padding: m ? 22 : 30, boxShadow: '0 18px 60px rgba(0,0,0,0.7)' }}>
+              <div style={{ fontSize: m ? 48 : 62, marginBottom: 8 }}>🚫</div>
+              <h2 style={{ fontFamily: S.FR, fontSize: m ? 24 : 30, margin: '0 0 10px', fontWeight: 900, color: '#fff' }}>Powers removed</h2>
+              <p style={{ fontSize: m ? 14 : 16, fontWeight: 700, opacity: 0.85, margin: '0 0 8px', lineHeight: 1.5 }}>
+                Admin controls are switched off on this laptop.
+              </p>
+              <div style={{ fontSize: 11.5, opacity: 0.6, fontWeight: 800, letterSpacing: '0.06em', marginBottom: 16 }}>Laptop {window.getDeviceId()}</div>
+              <button onClick={() => setPowersOff(false)} style={{ padding: '11px 22px', borderRadius: 999, background: '#ffb09a', color: '#2a1810', border: 'none', fontWeight: 900, fontSize: 15, cursor: 'pointer', fontFamily: 'inherit' }}>OK</button>
+            </div>
+          </div>
+        )}
         {memoriesOpen && <window.SBMaster.MemoriesPanel P={P} m={m} onClose={() => setMemoriesOpen(false)} />}
 
         {/* Music button for everyone when the master turns music on AND a link is set */}
@@ -256,6 +270,8 @@
           touchAction: 'manipulation', display: 'grid', placeItems: 'center',
         }}>{effDark ? '☀️' : '🌙'}</button>
 
+        {/* Permanent laptop block — beats everything else */}
+        <window.SBMaster.DeviceBanOverlay P={P} m={m} ban={window.isDeviceBanned && window.isDeviceBanned(control)} />
         {/* Global pause overlay (every device) */}
         <window.SBMaster.FreezeOverlay P={P} m={m} control={control} />
         {/* Targeted 10-second ban overlay (only on the banned player's device) */}

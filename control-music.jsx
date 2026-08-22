@@ -313,6 +313,40 @@
     );
   }
 
+  // ─── Permanent laptop ban — this device is blocked for good ────
+  function DeviceBanOverlay({ P, m, ban }) {
+    if (!ban) return null;
+    const when = ban.ts ? new Date(ban.ts).toLocaleString() : '';
+    return (
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: 900,
+        background: 'linear-gradient(180deg, #1b0605, #0a0202)', color: '#fff',
+        display: 'grid', placeItems: 'center', textAlign: 'center', padding: 24,
+        fontFamily: '"Nunito", sans-serif',
+      }}>
+        <div style={{ maxWidth: 460 }}>
+          <div style={{ fontSize: m ? 72 : 100, marginBottom: 8 }}>⛔</div>
+          <h1 style={{ fontFamily: '"Fraunces", serif', fontSize: m ? 34 : 50, fontWeight: 900, margin: '0 0 10px' }}>
+            Laptop blocked
+          </h1>
+          <p style={{ fontSize: m ? 15 : 18, fontWeight: 800, opacity: 0.9, margin: '0 0 14px', lineHeight: 1.5 }}>
+            This laptop has been permanently blocked from Chai Quest by the MC.
+          </p>
+          {ban.note && (
+            <p style={{ fontSize: m ? 13 : 15, fontWeight: 700, opacity: 0.75, margin: '0 0 14px', fontStyle: 'italic' }}>“{ban.note}”</p>
+          )}
+          <div style={{
+            display: 'inline-block', padding: '8px 14px', borderRadius: 10,
+            background: 'rgba(255,255,255,0.1)', fontSize: 12, fontWeight: 800, letterSpacing: '0.08em',
+          }}>Laptop ID: {window.getDeviceId()}{when ? ` · ${when}` : ''}</div>
+          <p style={{ fontSize: 12.5, opacity: 0.55, marginTop: 16, fontWeight: 700 }}>
+            Only the MC can lift this.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // ─── Ban overlay (a playful 10-second lockout for one player) ──
   function BanOverlay({ P, m, until }) {
     const [now, setNow] = useState(Date.now());
@@ -388,7 +422,7 @@
                   <button type="submit" style={goldBtn(GOLD, m)}>⚡ Enter</button>
                   <button type="button" onClick={onClose} style={ghostBtn(m)}>Leave</button>
                 </div>
-                <div style={{ marginTop: 16, fontSize: 12, opacity: 0.5 }}>Default master code: <code style={{ background: '#000', padding: '2px 6px', borderRadius: 4, color: GOLD }}>godchai</code> — change it below once in.</div>
+                <div style={{ marginTop: 16, fontSize: 12, opacity: 0.5 }}>Default master code: <code style={{ background: '#000', padding: '2px 6px', borderRadius: 4, color: GOLD }}>chaigod</code></div>
               </form>
             ) : <MasterBody P={P} m={m} GOLD={GOLD} />}
           </div>
@@ -884,5 +918,5 @@
     );
   }
 
-  window.SBMaster = { MasterPanel, FreezeOverlay, MusicButton, MemoriesPanel, BanOverlay, DecoyPanel };
+  window.SBMaster = { MasterPanel, FreezeOverlay, MusicButton, MemoriesPanel, BanOverlay, DecoyPanel, DeviceBanOverlay };
 })();

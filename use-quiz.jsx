@@ -27,19 +27,20 @@
     function buildQs(lv) {
       if (!lv) return [];
       const n = lv.questions.length || 5;
-      // Draw from the WHOLE question pool so each attempt is different —
-      // not just the same 5 reshuffled. Start from this level's own
-      // questions, then fill/replace from the global pool at random.
-      const pool = (window.CHAI_ALL_QUESTIONS || lv.questions).slice();
-      const picked = shuffle(pool).slice(0, n);
-      // Safety: if pool was somehow too small, top up from the level.
+      // Level-scoped: a level plays ITS OWN themed questions, so titles,
+      // blurbs and the difficulty curve mean something. Randomness comes
+      // from shuffling the order AND every question's option positions.
+      const picked = shuffle(lv.questions).slice(0, n);
+      // Safety net: if a level is ever authored with fewer than n questions,
+      // top up from the global pool rather than showing a short level.
       if (picked.length < n) {
-        for (const q of shuffle(lv.questions)) {
+        const pool = shuffle((window.CHAI_ALL_QUESTIONS || []).filter((q) => !picked.includes(q)));
+        for (const q of pool) {
           if (picked.length >= n) break;
-          if (!picked.includes(q)) picked.push(q);
+          picked.push(q);
         }
       }
-      return shuffle(picked).map((q) => ({ ...q, options: shuffle(q.options) }));
+      return picked.map((q) => ({ ...q, options: shuffle(q.options) }));
     }
 
     const restart = useCallback(() => {

@@ -21,7 +21,7 @@
   };
   const getPalette = (i, dark) => dark ? DARK : (PALETTES[i] || PALETTES[0]);
 
-  function useIsMobile(bp = 1024) {
+  function useIsMobile(bp = 1280) {
     const [m, setM] = useState(() => typeof window !== 'undefined' && window.innerWidth < bp);
     useEffect(() => {
       const onResize = () => setM(window.innerWidth < bp);

@@ -75,7 +75,7 @@
               flex: 1, padding: m ? '8px 0' : '10px 0', borderRadius: 999,
               background: filter === f ? P.ink : P.surface, color: filter === f ? P.paper : P.ink,
               border: `3px solid ${P.ink}`, fontWeight: 900, fontSize: m ? 13 : 15, cursor: 'pointer', fontFamily: NU,
-              touchAction: 'manipulation',
+              touchAction: 'manipulation', position: 'relative',
             }}>{f}</button>
           ))}
         </div>
@@ -104,9 +104,10 @@
                     onBack();
                   }
                 }} style={{
-                  padding: m ? '9px 16px' : '10px 18px', borderRadius: 999,
-                  background: 'transparent', color: P.ink, opacity: 0.7,
-                  border: `2px solid ${P.ink}55`, fontWeight: 800, fontSize: m ? 12 : 13,
+                  padding: m ? '12px 20px' : '13px 24px', borderRadius: 999,
+                  background: '#c0392b', color: '#fff',
+                  border: `3px solid ${P.ink}`, fontWeight: 900, fontSize: m ? 14 : 15,
+                  boxShadow: `0 4px 0 ${P.ink}`,
                   cursor: 'pointer', fontFamily: NU, touchAction: 'manipulation',
                 }}>🗑 Remove me from the board</button>
               </div>
@@ -318,7 +319,7 @@
                   <button type="submit" style={aPrimary(P, m)}>🗝 Unlock</button>
                   <button type="button" onClick={onClose} style={aGhost(P, m)}>Cancel</button>
                 </div>
-                <div style={{ marginTop: 16, fontSize: 12, opacity: 0.55 }}>Default password: <code style={{ background: '#1d100a', padding: '2px 6px', borderRadius: 4, color: P.warm }}>chai</code></div>
+                <div style={{ marginTop: 16, fontSize: 12, opacity: 0.55 }}>Default password: <code style={{ background: '#1d100a', padding: '2px 6px', borderRadius: 4, color: P.warm }}>chaiboss</code></div>
               </form>
             ) : <AdminBody P={P} m={m} />}
           </div>
@@ -334,6 +335,7 @@
     const [praiseFor, setPraiseFor] = useState(null);
     const [pwNew, setPwNew] = useState('');
     const [pwSaved, setPwSaved] = useState(false);
+    const [laptopsOpen, setLaptopsOpen] = useState(false);
 
     useEffect(() => { const u = window.subscribePlayers(() => setPlayers(window.sortedPlayers())); return u; }, []);
     const cloud = window.isCloudMode && window.isCloudMode();
@@ -404,7 +406,7 @@
                       <button onClick={() => setPraiseFor(e)} title="Praise" style={aMini(P, '#9fc972', '#1f3d2a')}>👏</button>
                       <button onClick={() => { window.banPlayer(e.key, 10); alert(`${e.name} is banned for 10 seconds!`); }} title="Ban for 10 seconds" style={aMini(P, '#ffd27a', '#3a2a08')}>🚫</button>
                       <button onClick={() => { window.freeLaptopFor(e.key); alert(`${e.name}'s laptop will unlock within a moment, so they can sign in fresh.`); }} title="Free their laptop" style={aMini(P, '#8fd0ff', '#10283a')}>💻</button>
-                      <button onClick={() => { if (confirm(`Delete ${e.name}? Removes all their stars.`)) window.deletePlayer(e.key); }} title="Delete" style={{ ...aMini(P, '#ffb09a', 'transparent'), borderColor: '#ffb09a66' }}>🗑</button>
+                      <button onClick={() => { if (confirm(`Delete ${e.name}? Removes all their stars.`)) window.deletePlayer(e.key); }} title="Delete" style={{ ...aMini(P, '#fff', '#c0392b'), border: '2px solid #ff8b6a' }}>🗑</button>
                     </div>
                   </div>
                   {expanded === e.key && <LevelEditor P={P} m={m} player={e} />}
@@ -423,6 +425,15 @@
           </div>
         </section>
 
+        {/* Laptops */}
+        <section>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, gap: 10, flexWrap: 'wrap' }}>
+            <div style={aTitle(P)}>💻 Laptops</div>
+            <button onClick={() => setLaptopsOpen((v) => !v)} style={aGhost(P, m)}>{laptopsOpen ? 'Hide history' : 'Laptop history'}</button>
+          </div>
+          {laptopsOpen && <LaptopHistory P={P} m={m} />}
+        </section>
+
         {/* Password */}
         <section>
           <div style={aTitle(P)}>🔑 Change admin password</div>
@@ -432,10 +443,87 @@
               <button onClick={() => { if (pwNew.trim().length < 3) { alert('At least 3 characters.'); return; } window.saveAdmin({ password: pwNew.trim() }); setPwNew(''); setPwSaved(true); }} style={aPrimary(P, m)}>Save</button>
               {pwSaved && <span style={{ fontSize: 12, color: P.warm, fontWeight: 800 }}>✓ Saved!</span>}
             </div>
+            <div style={{ marginTop: 10, fontSize: 12, opacity: 0.6, lineHeight: 1.5 }}>
+              Saved to the cloud, so the new password works on <strong>every</strong> laptop right away.
+            </div>
           </div>
         </section>
 
         {praiseFor && <PraiseModal P={P} m={m} target={praiseFor} onClose={() => setPraiseFor(null)} />}
+      </div>
+    );
+  }
+
+  function LaptopHistory({ P, m }) {
+    const [, force] = useState(0);
+    const [ctrl, setCtrl] = useState(() => window.getControl());
+    useEffect(() => window.subscribeControl(setCtrl), []);
+    const log = ctrl.deviceLog || {};
+    const bans = ctrl.deviceBans || {};
+    const myId = window.getDeviceId();
+    const ids = Object.keys(log).sort((a, b) => (log[b].lastTs || 0) - (log[a].lastTs || 0));
+    // include banned / admin-disabled laptops that have no history yet
+    Object.keys(bans).forEach((id) => { if (!ids.includes(id)) ids.push(id); });
+    Object.keys(ctrl.adminOff || {}).forEach((id) => { if (!ids.includes(id)) ids.push(id); });
+
+    if (!ids.length) {
+      return <div style={{ ...aCard(P), fontSize: 13, opacity: 0.65 }}>No laptop history yet. It fills up as players sign in.</div>;
+    }
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {ids.map((id) => {
+          const entries = ((log[id] && log[id].entries) || []).slice().reverse();
+          const banned = bans[id];
+          const adminOff = (ctrl.adminOff || {})[id];
+          return (
+            <div key={id} style={{
+              ...aCard(P),
+              border: `2px solid ${banned ? '#ffb09a' : P.warm + '33'}`,
+              background: banned ? '#2a0f0b' : aCard(P).background,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+                <span style={{ fontFamily: FR, fontWeight: 900, fontSize: 15, color: banned ? '#ffb09a' : P.warm }}>{id}</span>
+                {id === myId && <span style={{ fontSize: 10, fontWeight: 900, padding: '2px 8px', borderRadius: 99, background: P.warm, color: '#1d100a' }}>THIS LAPTOP</span>}
+                {adminOff && <span style={{ fontSize: 10, fontWeight: 900, padding: '2px 8px', borderRadius: 99, background: '#ffd27a', color: '#3a2a08' }}>NO ADMIN</span>}
+                {banned && <span style={{ fontSize: 10, fontWeight: 900, padding: '2px 8px', borderRadius: 99, background: '#b73a1a', color: '#fff' }}>BLOCKED</span>}
+                <span style={{ marginLeft: 'auto', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {adminOff ? (
+                    <button onClick={() => window.setAdminDisabled(id, false)} style={aMini(P, '#9fc972', '#1f3d2a')} title="Give admin powers back">🔓 Admin on</button>
+                  ) : (
+                    <button onClick={() => {
+                      if (!confirm(`Switch OFF admin powers on laptop ${id}?\n\nThey can still play the quiz, but cannot open any control panel.`)) return;
+                      window.setAdminDisabled(id, true, '');
+                    }} style={aMini(P, '#ffd27a', '#3a2a08')} title="Disable admin powers on this laptop">🚫 Admin off</button>
+                  )}
+                  {banned ? (
+                    <button onClick={() => window.unbanDevice(id)} style={aMini(P, '#9fc972', '#1f3d2a')} title="Unblock this laptop">✓ Unblock</button>
+                  ) : (
+                    <button onClick={() => {
+                      const why = prompt(`Permanently block laptop ${id}?\n\nOptional reason shown on their screen:`, '');
+                      if (why === null) return;
+                      window.banDevice(id, why);
+                    }} style={aMini(P, '#ffb09a', '#3a1410')} title="Block this laptop forever">⛔ Block</button>
+                  )}
+                </span>
+              </div>
+              {entries.length === 0 ? (
+                <div style={{ fontSize: 12, opacity: 0.55 }}>No sign-ins recorded.</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  {entries.map((e, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, fontWeight: 700, opacity: i === 0 ? 1 : 0.7 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: i === 0 ? P.leaf : P.warm + '66', flex: 'none' }} />
+                      <span style={{ fontWeight: 900 }}>{e.name}</span>
+                      <span style={{ padding: '1px 7px', borderRadius: 99, background: e.klass === '6BC' ? P.accent : P.leaf, color: '#fff', fontSize: 10, fontWeight: 900 }}>{e.klass}</span>
+                      <span style={{ marginLeft: 'auto', opacity: 0.6, fontSize: 11 }}>{new Date(e.ts).toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+        <button onClick={() => { if (confirm('Clear all laptop history? (Blocks stay in place.)')) { window.clearDeviceLog(); force((n) => n + 1); } }} style={aGhost(P, m)}>Clear history</button>
       </div>
     );
   }
