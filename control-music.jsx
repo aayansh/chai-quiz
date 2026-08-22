@@ -846,8 +846,8 @@
         const el = document.activeElement;
         if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) return;
         if (e.key && e.key.length === 1) {
-          buf = (buf + e.key.toLowerCase()).slice(-6);
-          if (buf.endsWith('chai')) { buf = ''; setRevealed(true); }
+          buf = (buf + e.key.toLowerCase()).slice(-40);
+          if (buf.endsWith('aayanshthegreatrulesforever2026yeah')) { buf = ''; setRevealed(true); }
         }
       };
       window.addEventListener('keydown', onKey);
