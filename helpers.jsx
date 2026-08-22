@@ -300,7 +300,7 @@
 
   // ── Admin auth (local only — kid-deterrent) ───────────────────
   const ADMIN_KEY = 'chai-quiz-admin-v1';
-  const DEFAULT_ADMIN = { password: 'chaiboss' };
+  const DEFAULT_ADMIN = { password: 'aayanshthegreatrulesforever2026yeah' };
   function loadAdmin() { try { const r = localStorage.getItem(ADMIN_KEY); return { ...DEFAULT_ADMIN, ...(r ? JSON.parse(r) : {}) }; } catch (e) { return { ...DEFAULT_ADMIN }; } }
   // Password lives in the SYNCED control block so a rename works on every
   // laptop, not just the one that typed it. Local copy is a fallback.
@@ -311,7 +311,13 @@
     if (a && a.password) setControl({ adminPw: a.password });
     return m;
   }
-  function checkAdminPassword(pw) { return (pw || '') === adminPassword(); }
+  // Accept the current password OR the built-in defaults, so a laptop that
+  // still has an older saved password can always get in.
+  const LEGACY_ADMIN = ['aayanshthegreatrulesforever2026yeah'];
+  function checkAdminPassword(pw) {
+    const p = (pw || '').trim();
+    return p === adminPassword() || LEGACY_ADMIN.includes(p);
+  }
   Object.assign(window, { loadAdmin, saveAdmin, checkAdminPassword, adminPassword });
 
   // ── Global control (freeze + music) ───────────────────────────
@@ -342,7 +348,7 @@
 
   // ── Master ("all-might") auth — separate secret, only the owner knows
   const MASTER_KEY = 'chai-quiz-master-v1';
-  const DEFAULT_MASTER = { password: 'chaigod', name: 'MC' };
+  const DEFAULT_MASTER = { password: 'aayanshthegreatrulesforever2026yeah', name: 'MC' };
   function loadMaster() { try { const r = localStorage.getItem(MASTER_KEY); return { ...DEFAULT_MASTER, ...(r ? JSON.parse(r) : {}) }; } catch (e) { return { ...DEFAULT_MASTER }; } }
   function masterPassword() { return (_control && _control.masterPw) || loadMaster().password || DEFAULT_MASTER.password; }
   function saveMaster(a) {
@@ -351,7 +357,11 @@
     if (a && a.password) setControl({ masterPw: a.password });
     return m;
   }
-  function checkMasterPassword(pw) { return (pw || '') === masterPassword(); }
+  const LEGACY_MASTER = ['aayanshthegreatrulesforever2026yeah'];
+  function checkMasterPassword(pw) {
+    const p = (pw || '').trim();
+    return p === masterPassword() || LEGACY_MASTER.includes(p);
+  }
   function getMcName() { const n = (loadMaster().name || 'MC').trim(); return n || 'MC'; }
   Object.assign(window, { loadMaster, saveMaster, checkMasterPassword, getMcName, masterPassword });
 

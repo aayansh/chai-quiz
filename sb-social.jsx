@@ -319,7 +319,7 @@
                   <button type="submit" style={aPrimary(P, m)}>🗝 Unlock</button>
                   <button type="button" onClick={onClose} style={aGhost(P, m)}>Cancel</button>
                 </div>
-                <div style={{ marginTop: 16, fontSize: 12, opacity: 0.55 }}>Default password: <code style={{ background: '#1d100a', padding: '2px 6px', borderRadius: 4, color: P.warm }}>chaiboss</code></div>
+                <div style={{ marginTop: 16, fontSize: 12, opacity: 0.55 }}>Ask the MC for the password.</div>
               </form>
             ) : <AdminBody P={P} m={m} />}
           </div>

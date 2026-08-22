@@ -422,7 +422,7 @@
                   <button type="submit" style={goldBtn(GOLD, m)}>⚡ Enter</button>
                   <button type="button" onClick={onClose} style={ghostBtn(m)}>Leave</button>
                 </div>
-                <div style={{ marginTop: 16, fontSize: 12, opacity: 0.5 }}>Default master code: <code style={{ background: '#000', padding: '2px 6px', borderRadius: 4, color: GOLD }}>chaigod</code></div>
+                <div style={{ marginTop: 16, fontSize: 12, opacity: 0.5 }}>Only the MC knows this code.</div>
               </form>
             ) : <MasterBody P={P} m={m} GOLD={GOLD} />}
           </div>
